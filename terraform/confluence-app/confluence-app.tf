@@ -13,14 +13,23 @@ module "http_sg" {
   description = "SG for ELB test"
   vpc_id      = "${module.conf_vpc.vpc_id}"
 
-//  egress_cidr_blocks = ["0.0.0.0/0"]
   ingress_cidr_blocks = ["0.0.0.0/0"]
 
-//  egress_rules = ["all-all"]
   ingress_rules = ["all-icmp"]
   ingress_rules = ["http-80-tcp"]
   # TODO: fix this. workaround for missing bastion
   ingress_rules = ["ssh-tcp"]
+
+
+  egress_with_cidr_blocks = [
+    {
+      rule        = "all-all"
+      cidr_blocks = "0.0.0.0/0"
+    }
+  ]
+    // Using the following fields will force IPv6 egress which we don't support
+    //  egress_cidr_blocks = ["0.0.0.0/0"]
+    //  egress_rules = ["all-all"]
 }
 
 ################
@@ -140,7 +149,7 @@ resource "aws_instance" "myapp_instance" {
 
     ##### Workaround root_block_device.0.delete_on_termination: "false" => "true" (forces new resource)
     lifecycle {
-     ignore_changes = ["root_block_device", "security_groups"]
+     ignore_changes = ["associate_public_ip_address", "root_block_device", "security_groups"]
     }
 }
 
@@ -159,16 +168,32 @@ resource "aws_eip_association" "myapp_eip_assoc" {
 #####################
 # RDS Postgresql
 #####################
+resource "aws_db_subnet_group" "dbsubnet" {
+  name       = "conf_db_net"
+  subnet_ids = ["${element(module.conf_vpc.database_subnets,0)}"]
+}
 # Create db instance 1
 resource "aws_db_instance" "dbinst1" {
   identifier = "confdb"
   instance_class = "m1.medium"
   allocated_storage = 10
-  engine = "postgresql"
+  engine = "PostgreSQL"
   name = "db123"
   password = "dbpassword"
   username = "terraform"
   engine_version = "9.6.00"
   skip_final_snapshot = true
-  db_subnet_group_name = "${element(module.conf_vpc.database_subnets,0)}"
+  auto_minor_version_upgrade = false
+  db_subnet_group_name = "${aws_db_subnet_group.dbsubnet.name}"
+
+  timeouts {
+    create = "10m"
+    delete = "10m"
+  }
+
+  # Workaround
+  lifecycle {
+    ignore_changes = ["name", "engine"]
+  }
+
 }
