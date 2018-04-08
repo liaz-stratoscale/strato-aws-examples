@@ -1,7 +1,7 @@
 data "aws_ami" "linux"{
     filter{
         name="name"
-        values=["*webserver-centos*"]
+        values=["*centos-webserver*"]
     }
 }
 
@@ -140,16 +140,30 @@ resource "aws_instance" "myapp_instance" {
 
     count = "${var.number_of_instances}"
     ami                         = "${data.aws_ami.linux.id}"
-    instance_type               = "t2.medium"
+    instance_type               = "${var.instance_type}"
     security_groups             = ["${module.http_sg.this_security_group_id}"]
     subnet_id                   = "${element(module.conf_vpc.private_subnets,0)}"
     associate_public_ip_address = true
     # Cannot use keypair with Terraform. Using username/password root/liaz1234
     key_name                    = "${var.keypair}"
 
+    # We run a remote provisioner on the instance after creating it.
+    # In this case, we just install nginx and start it. By default,
+    # this should be on port 80
+    # !!! MTU BUG !!! - user data will set the MTU to 1416
+    user_data = "${file("userdata.sh")}"
+
+  # BK-5301 - Workaround is to use the original size of 10GB
+//    root_block_device {
+//        volume_size = 50
+//    }
+
     ##### Workaround root_block_device.0.delete_on_termination: "false" => "true" (forces new resource)
     lifecycle {
-     ignore_changes = ["associate_public_ip_address", "root_block_device", "security_groups"]
+      # This not a workarund - just standard protection
+//      prevent_destroy = true
+      # This a workaround for JIRAs
+      ignore_changes = ["associate_public_ip_address", "root_block_device", "security_groups"]
     }
 }
 
@@ -173,6 +187,7 @@ resource "aws_db_subnet_group" "dbsubnet" {
   subnet_ids = ["${element(module.conf_vpc.database_subnets,0)}"]
 }
 # Create db instance 1
+# NoteL Default port is 5432
 resource "aws_db_instance" "dbinst1" {
   identifier = "confdb"
   instance_class = "m1.medium"
