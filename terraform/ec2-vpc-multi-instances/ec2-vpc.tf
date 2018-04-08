@@ -86,6 +86,7 @@ resource "aws_instance" "myapp_instance" {
 resource "aws_eip" "myapp_instance_eip" {
   count = "${var.count}"
   depends_on = ["aws_internet_gateway.myapp_gw"]
+  vpc = true
 }
 
 resource "aws_eip_association" "myapp_eip_assoc" {
