@@ -2,7 +2,7 @@
 data "aws_ami" "linux"{
     filter{
         name="name"
-        values=["*centos*"]
+        values=["*cirros*"]
     }
 }
 
@@ -15,5 +15,10 @@ resource "aws_instance" "ec2_instance" {
     }
     # Can use any aws instance type supported by symphony
     instance_type = "t2.micro"
-    count=3
+    count=1
+
+    root_block_device {
+        volume_size = 40
+        volume_type = "standard"
+    }
 }

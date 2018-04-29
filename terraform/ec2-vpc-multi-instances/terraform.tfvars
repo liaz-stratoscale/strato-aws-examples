@@ -1,14 +1,14 @@
 # Region Setting
-symphony_ip = "<region ip>"
+symphony_ip = "10.16.145.18"
 
 # instance settings
-ami_my_image = "<ami id>"
-keypair = "<keypair name>"
-instance_type = "< instance type >"
+ami_my_image = "ami-17c32387fa8d4671ae9d8168d9ccf34e"
+keypair = "liazkay"
+instance_type = "t2.small"
 
 # App settings
-count = <number of instances>
+count = "1"
 
 # Auth Credentials
-access_key="<access key>"
-secret_key="<secret key>"
+access_key="3e285aa66a15434f83eabbd3082e880f"
+secret_key="cfee4da338e448e49c1d0dadb330d1fb"

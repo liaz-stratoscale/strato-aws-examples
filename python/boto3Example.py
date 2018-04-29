@@ -13,15 +13,16 @@ def main():
     """
 
     # creating a connection to Symphony AWS Compatible region
+    import ipdb; ipdb.set_trace()
     client = boto3.Session.client(boto3.session.Session(), service_name="ec2", region_name="symphony",
-                                  endpoint_url="https://<cluster ip>/api/v2/ec2/",
+                                  endpoint_url="https://10.16.145.114/api/v2/aws/ec2/",
                                   verify=False,
-                                  aws_access_key_id="<key>",
-                                  aws_secret_access_key="<secret>")
+                                  aws_access_key_id="07485854231b49249381a01fca555d50",
+                                  aws_secret_access_key="87d1da4c0d5c461781fcbc772c0583fa")
 
     # finding our Centos image, grabbing its image ID
     images = client.describe_images()
-    image_id = next(image['ImageId'] for image in images if 'centos' in image['Name'])
+    image_id = next(image['ImageId'] for image in images['Images'] if 'cirros' in image['Name'])
 
     print "Found desired image with ID: " + image_id
 
@@ -55,5 +56,7 @@ def main():
         Device='/dev/sdm'
     )
 
+
 if __name__ == '__main__':
-    sys.exit(main(sys.argv[1:]))
+    sys.exit(main())
+

@@ -1,4 +1,6 @@
-# Region Credentials
-symphony_ip = "<region ip>"
-access_key="<access key>"
-secret_key="<secret key>"
+# Region Setting
+symphony_ip = "10.16.145.18"
+
+# Auth Credentials
+access_key="3e285aa66a15434f83eabbd3082e880f"
+secret_key="cfee4da338e448e49c1d0dadb330d1fb"
