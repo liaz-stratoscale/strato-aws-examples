@@ -23,7 +23,7 @@ resource "aws_subnet" "myapp_subnet_1"{
 }
 
 resource "aws_subnet" "myapp_subnet_2"{
-  cidr_block = "192.168.20.0/24"
+  cidr_block = "192.168.30.0/24"
   vpc_id = "${aws_vpc.myapp_vpc.id}"
 }
 
@@ -33,11 +33,12 @@ resource "aws_internet_gateway" "myapp_gw" {
 
 resource "aws_route_table" "subnet_access" {
   vpc_id = "${aws_vpc.myapp_vpc.id}"
+}
 
-  route {
-    cidr_block = "172.30.0.0/0"
-    gateway_id = "${aws_internet_gateway.myapp_gw.id}"
-  }
+resource "aws_route" "myroute" {
+  route_table_id = "${aws_route_table.subnet_access.id}"
+  destination_cidr_block = "172.56.0.0/16"
+  gateway_id = "${aws_internet_gateway.myapp_gw.id}"
 }
 
 resource "aws_route_table_association" "subnet_rtb_assoc" {
@@ -49,7 +50,7 @@ resource "aws_default_route_table" "default" {
     default_route_table_id = "${aws_vpc.myapp_vpc.default_route_table_id}"
 
     route {
-        cidr_block = "172.20.0.0/0"
+        cidr_block = "172.50.0.0/16"
         gateway_id = "${aws_internet_gateway.myapp_gw.id}"
     }
 }
