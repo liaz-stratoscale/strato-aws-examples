@@ -102,7 +102,7 @@ resource "aws_instance" "myapp_instance_group_1" {
     count = "${var.count}"
     # bug BK-5483
     tags{
-        Name="my_instance_${count.index}"
+        Name="group_1_my_instance_${count.index}"
     }
 }
 
@@ -128,7 +128,7 @@ resource "aws_instance" "myapp_instance_group_2" {
     count = "${var.count}"
     # bug BK-5483
     tags{
-        Name="my_instance_${count.index}"
+        Name="group_2_my_instance_${count.index}"
     }
 }
 

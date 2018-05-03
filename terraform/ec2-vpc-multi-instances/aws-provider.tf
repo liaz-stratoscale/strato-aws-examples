@@ -15,5 +15,5 @@ provider "aws" {
     skip_credentials_validation = true
 
     # No importance for this value currently
-    region = "us-west-1"
+    region = "us-east-1"
 }
