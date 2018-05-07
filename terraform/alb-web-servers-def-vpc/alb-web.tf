@@ -1,14 +1,30 @@
 # Creating a VPC & Networking
-resource "aws_vpc" "default" {
-    cidr_block = "10.48.0.0/16"
+resource "aws_vpc" "myapp_vpc" {
+    cidr_block = "192.168.0.0/16"
     enable_dns_support = false
+
+  # tags {
+  #   Name = "liaz_vpc"
+  # }
 }
 
-resource "aws_subnet" "subnet1"{
-    cidr_block = "10.48.1.0/24"
-    vpc_id = "${aws_vpc.default.id}"
+resource "aws_vpc_dhcp_options" "dns_resolver" {
+  domain_name_servers = ["8.8.8.8", "8.8.4.4"]
 }
-###################################
+
+resource "aws_vpc_dhcp_options_association" "dns_resolver" {
+  vpc_id          = "${aws_vpc.myapp_vpc.id}"
+  dhcp_options_id = "${aws_vpc_dhcp_options.dns_resolver.id}"
+}
+
+resource "aws_subnet" "myapp_subnet"{
+    cidr_block = "192.168.10.0/24"
+    vpc_id = "${aws_vpc.myapp_vpc.id}"
+}
+
+resource "aws_internet_gateway" "myapp_gw" {
+  vpc_id = "${aws_vpc.myapp_vpc.id}"
+}
 
 # Creating two instances of web server ami
 resource "aws_instance" "web1" {

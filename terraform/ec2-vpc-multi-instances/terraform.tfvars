@@ -1,8 +1,8 @@
 # Region Setting
-symphony_ip = "10.16.145.18"
+symphony_ip = "10.16.146.131"
 
 # instance settings
-ami_my_image = "ami-17c32387fa8d4671ae9d8168d9ccf34e"
+ami_my_image = "ami-bd3745fc7b2e446da9de57820dc76bca"
 keypair = "liazkay"
 instance_type = "t2.small"
 
@@ -10,5 +10,5 @@ instance_type = "t2.small"
 count = "1"
 
 # Auth Credentials
-access_key="3e285aa66a15434f83eabbd3082e880f"
-secret_key="cfee4da338e448e49c1d0dadb330d1fb"
+access_key="cd413cb551cd4f3bbe7397c3b16f9a81"
+secret_key="24347ddd1c0f4155bd53766871d9a507"
