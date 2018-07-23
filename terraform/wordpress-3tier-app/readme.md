@@ -4,18 +4,24 @@ This example shows you how to use Terraform to create a a 3-tier application env
 
 ## What this example installs:
 
-Networks:
+**Networks**
 
 1 VPC
-1 Database subnets
-1 Web subnets
+
+1 Database subnet
+
+1 Web subnet
+
 1 Public subnet
 
 Other resources: 
 
-1 Netwrok Load Balancer
+1 load balancer
+
 1 or more web servers (Ubuntu Xenial)
+
 1 RDS instance (MySQL 5.7)
+
 1 Floating IP from the Symphony edge network
 
 ## Before You Begin
@@ -24,7 +30,7 @@ Before you can use this Terraform example, you need to:
 
 * First, do some setup tasks within Symphony.
 
-* Then, create a terraform.tfvars file that supplies your environment-specific values for various variables.
+* Then, create a `terraform.tfvars` file that supplies your environment-specific values for various variables.
 
 Each task is described below.
 
@@ -37,7 +43,7 @@ Before you can use this Terraform example, you need to do the following tasks wi
 
     **Menu** > **Account Management** > **Accounts** > select an account > **Create Project** > select existing Symphony edge network for this project
 
-    For more information about using VPC-enabled projects, see <link-to-public-doc>
+    For more information about using VPC-enabled projects, see link-to-public-doc.
     
 2. Create a **Tenant Admin user** that is associated the the project you just created:
 
@@ -77,6 +83,8 @@ Before you can use this Terraform example, you need to do the following tasks wi
     
     
 ### Create `terraform.tfvars`
+
+
 
 
     
