@@ -24,7 +24,7 @@ This example shows you how to use Terraform to create a a 3-tier application env
 
 1 Floating IP from the Symphony edge network
 
-## Before You Begin
+## Before you begin
 
 Before you can use this Terraform example, you need to:
 
@@ -35,7 +35,7 @@ Before you can use this Terraform example, you need to:
 Each task is described below.
 
 
-### Symphony setup tasks
+### Before you begin: Symphony setup tasks
 
 Before you can use this Terraform example, you need to do the following tasks within the Symphony GUI:
 
@@ -82,7 +82,7 @@ Before you can use this Terraform example, you need to do the following tasks wi
     ami-1b8ecb82893a4d1f9d500ce33d90496c
     
     
-### Create `terraform.tfvars`
+### Before you begin: create `terraform.tfvars`
 
 Use the included `terraform.tfvars.sample` file as a template. For each variable, fill in your environment-specific value.
 
