@@ -2,7 +2,7 @@
 
 This example shows you how to use Terraform to create a a 3-tier application environment for Wordpress.
 
-## What this example installs:
+## What this example installs
 
 **Networks**
 
