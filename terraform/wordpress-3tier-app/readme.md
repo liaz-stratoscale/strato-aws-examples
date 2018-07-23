@@ -14,7 +14,7 @@ This example shows you how to use Terraform to create a a 3-tier application env
 
 1 Public subnet
 
-Other resources: 
+**Other resources**
 
 1 load balancer
 
@@ -83,6 +83,8 @@ Before you can use this Terraform example, you need to do the following tasks wi
     
     
 ### Create `terraform.tfvars`
+
+Use the included `terraform.tfvars.sample` file as a template. For each variable, fill in your environment-specific value.
 
 
 
