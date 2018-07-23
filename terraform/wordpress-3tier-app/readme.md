@@ -86,6 +86,8 @@ Before you can use this Terraform example, you need to do the following tasks wi
 
 Use the included `terraform.tfvars.sample` file as a template. For each variable, fill in your environment-specific value.
 
+Save the sample file as `terraform.tfvars` (remove the `.sample` extension) before running `terraform apply`.
+
 
 
 
