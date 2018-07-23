@@ -43,7 +43,7 @@ Before you can use this Terraform example, you need to do the following tasks wi
 
     **Menu** > **Account Management** > **Accounts** > select an account > **Create Project** > select existing Symphony edge network for this project
 
-    For more information about using VPC-enabled projects, see link-to-public-doc.
+    For more information about using VPC-enabled projects, see [additional information about using VPC-enabled projects](https://www.stratoscale.com/docs/Using-a-VPC-Enabled-Project/).
     
 2. Create a **Tenant Admin user** that is associated the the project you just created:
 
