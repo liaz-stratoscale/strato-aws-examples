@@ -47,7 +47,7 @@ Before you can use this Terraform example, you need to do the following tasks wi
     
 2. Create a **Tenant Admin user** that is associated the the project you just created:
 
-    **Menu** > **Account Management*** > **Accounts** > select an account > **Users** > "Create User"
+    **Menu** > **Account Management*** > **Accounts** > select an account > **Users** > **Create User**
     
     **Projects** field: specify the project you just created
     
@@ -57,7 +57,7 @@ Before you can use this Terraform example, you need to do the following tasks wi
 
     Log in to the Symhony GUI as the Tenant Admin user you just created.
     
-    In the upper right corner, click "Hi username" > "Access Keys" > "Create"
+    In the upper right corner, click **Hi username** > **Access Keys** > **Create**
     
     Copy both the access key and the secret key (click the copy icon to the right of each key).
     
