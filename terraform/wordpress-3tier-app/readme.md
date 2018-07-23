@@ -51,7 +51,7 @@ Before you can use this Terraform example, you need to do the following tasks wi
     
     **Projects** field: specify the project you just created
     
-    **Account Roles** field: specify **Tenant Admin***
+    **Account Roles** field: specify **Tenant Admin**
     
 3. Get the **access and secret keys for the project**:
 
