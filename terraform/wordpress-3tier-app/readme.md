@@ -81,13 +81,13 @@ Before you can use this Terraform example, you need to do the following tasks wi
     
     ami-1b8ecb82893a4d1f9d500ce33d90496c
     
-6. Enable and initialize load balancing:
+6. Enable load balancing:
 
-    **Menu** > ... to be continued
+    **Menu** > **Region Management** > **Settings** > **Services & Support** > click Load Balancing toggle to ON.
     
 7. Enable and initialize RDS using a MySQL 5.7 engine:
 
-    **Menu** > ... to be continued
+    **Menu** > **Region Management** > **Settings** > **Services & Support** > click Database toggle to ON.
     
     
 ### Before you begin: create `terraform.tfvars`
