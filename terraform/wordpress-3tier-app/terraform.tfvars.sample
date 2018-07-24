@@ -1,38 +1,42 @@
 # Sample tfvars file 
 # omit .sample from extension before applying 
 
+############################
+
 # Stratoscale Symphony credentials
 
-symp_access_key = ""
-symp_secret_key = ""
-symphony_ip = ""
+symp_access_key = "<Access key>"
+symp_secret_key = "<Secret key>"
+symphony_ip = "<Symphony IP>"
 
+############################
+
+# Web servers info
 
 # Number of web servers (load balancer will automatically manage target groups)
 
 web_number = "2"
 
-#Use an Ubuntu Xenial cloud image
-#Handy URL - https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
+# Image to use for web servers -- use an Ubuntu Xenial cloud image
+# We recommend that you use this one: 
+# https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
 
-web_ami = ""
-web_instance_type = "t2.medium"
+web_ami = "<AMI image ID>"
 
-# Public keypair path
+web_instance_type = "t2.small"
 
-public_keypair_path = ""
+connect_instances_to_web_ips = false
 
+public_keypair_path = "<Path to public keypair>"
 
+############################
 
-#Database information (Wordpress container will use wordpress database by default)
+# Database information
+# (Wordpress container will use wordpress database by default)
 
 db_user = "admin"
-db_password = "stratoscale"
-db_name = ""
+db_password = "adminpassworddb"
+db_name = "wordpress"
 
-# Connect instances to web IPs
-
-connect_instances_to_web_ips = ""
-
-
+############################
 
