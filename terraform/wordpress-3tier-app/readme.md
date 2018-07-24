@@ -18,7 +18,7 @@ This example shows you how to use Terraform to create a a 3-tier application env
 
 1 load balancer
 
-1 or more web servers (Ubuntu Xenial)
+2 or more web servers (Ubuntu Xenial)
 
 1 RDS instance (MySQL 5.7)
 
