@@ -64,9 +64,9 @@ Before you can use this Terraform example, you need to do the following tasks wi
 
 4. **Upload the image** you will use for your web server(s) into Symphony:
 
-    Use an Ubuntu Xenial cloud image.
+    Use the Ubuntu Xenial cloud image at this URL:
     
-    Handy URL - https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
+    https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
     
     To upload the image into Symphony:
     
