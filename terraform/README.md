@@ -1,4 +1,4 @@
-Symphony Terraform Examples
+# Symphony Terraform Examples
 
 Theses examples show you how to use the Terraform AWS provider with Stratoscale Symphony.
 
