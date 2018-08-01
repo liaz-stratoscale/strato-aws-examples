@@ -23,7 +23,7 @@ Before you can use this Terraform example, you need to do the following tasks wi
 
     * Obtain access and secret keys for that project
 
-    For information on how to do these tasks, click [here](../README.md)
+    For information on how to do these tasks, click [here](../README.md).
     
 
 2. Get the **AMI ID** for the image you want to use for the EC2 instance you are creating:
