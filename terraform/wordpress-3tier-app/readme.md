@@ -88,7 +88,7 @@ The following variables: `symphony_ip`, `symp_access_key`, `symp_secret_key` are
 
 Number of web servers (load balancer will automatically manage target groups).
 
-**web_ami***
+**web_ami**
 
 The AMI ID for the Xenial image you jsut uploaded into Symphony. It has a format like this:
     
