@@ -79,24 +79,9 @@ resource "aws_security_group" "allow_all" {
   vpc_id      = "${aws_vpc.myapp_vpc.id}"
 
   ingress {
-    protocol    = "tcp"
+    protocol    = "-1"
     from_port   = 0
     to_port     = 0
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-
-  ingress {
-    protocol    = "udp"
-    from_port   = 0
-    to_port     = 0
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    protocol    = "icmp"
-    from_port   = 8 #ICMP type number if protocol is "icmp"
-    to_port     = 0 #ICMP code number if protocol is "icmp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 

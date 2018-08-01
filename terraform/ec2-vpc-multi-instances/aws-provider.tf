@@ -12,4 +12,6 @@ provider "aws" {
 
     # No importance for this value currently
     region = "us-east-1"
+    # Pinning AWS provider to 1.28 for Symphony 
+    provider = "1.28"
 }
