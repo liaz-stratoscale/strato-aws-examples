@@ -1,8 +1,8 @@
 # Wordpress Example
 
-This example shows you how to use Terraform to create a a 3-tier application environment for Wordpress.
+This example shows you how to use Terraform to create a 3-tier application environment for Wordpress.
 
-## What this example installs
+## What this example deploys
 
 **Networks**
 
@@ -22,7 +22,7 @@ This example shows you how to use Terraform to create a a 3-tier application env
 
 1 RDS instance (MySQL 5.7)
 
-1 Floating IP from the Symphony edge network
+1 elastic IP from the Symphony edge network
 
 ## Before you begin
 
@@ -30,7 +30,7 @@ Before you can use this Terraform example, you need to:
 
 * First, do some setup tasks within Symphony.
 
-* Then, create a `terraform.tfvars` file that supplies your environment-specific values for various variables.
+* Then, edit the sample `terraform.tfvars` file to specify your environment-specific values for various variables.
 
 Each task is described below.
 
@@ -39,30 +39,15 @@ Each task is described below.
 
 Before you can use this Terraform example, you need to do the following tasks within the Symphony GUI:
 
-1. Create a **dedicated VPC-enabled project** for use with Terraform:
+1. Make sure you have used Symphony to:
 
-    **Menu** > **Account Management** > **Accounts** > select an account > **Create Project** > select existing Symphony edge network for this project
+    * Create a VPC-enabled project
 
-    For more information about using VPC-enabled projects, see [additional information about using VPC-enabled projects](https://knowledge2.stratoscale.com/display/SYMP/Using+a+VPC-Enabled+Project).
-    
-2. Create a **Tenant Admin user** that is associated the the project you just created:
+    * Obtain access and secret keys for that project
 
-    **Menu** > **Account Management*** > **Accounts** > select an account > **Users** > **Create User**
-    
-    **Projects** field: specify the project you just created
-    
-    **Account Roles** field: specify **Tenant Admin**
-    
-3. Get the **access and secret keys for the project**:
+    For information on how to do these tasks, click [here](../README.md) 
 
-    Log in to the Symhony GUI as the Tenant Admin user you just created.
-    
-    In the upper right corner, click **Hi username** > **Access Keys** > **Create**
-    
-    Copy both the access key and the secret key (click the copy icon to the right of each key).
-    
-
-4. **Upload the image** you will use for your web server(s) into Symphony:
+2. **Upload the image** you will use for your web server(s) into Symphony:
 
     Use the Ubuntu Xenial cloud image at this URL:
     
@@ -73,7 +58,7 @@ Before you can use this Terraform example, you need to do the following tasks wi
     **Menu** > **Applications** > **Images** > **Create** > specify URL
     
     
-5. Get the **AMI ID** for the image you just uploaded into Symphony:
+3. Get the **AMI ID** for the image you just uploaded into Symphony:
 
     **Menu** > **Applications** > **Images**
     
@@ -81,24 +66,56 @@ Before you can use this Terraform example, you need to do the following tasks wi
     
     ami-1b8ecb82893a4d1f9d500ce33d90496c
     
-6. Enable load balancing:
+4. Enable load balancing:
 
     **Menu** > **Region Management** > **Settings** > **Services & Support** > click Load Balancing toggle to ON.
     
-7. Enable and initialize RDS using a MySQL 5.7 engine:
+5. Enable and initialize RDS using a MySQL 5.7 engine:
 
     **Menu** > **Region Management** > **Settings** > **Services & Support** > click Database toggle to ON.
     
     
-### Before you begin: create `terraform.tfvars`
+### Before you begin: edit `terraform.tfvars`
 
-Use the included `terraform.tfvars.sample` file as a template. For each variable, fill in your environment-specific value.
+Use the included `terraform.tfvars` file as a template. For each variable, fill in your environment-specific value, as described below:
 
-Save the sample file as `terraform.tfvars` (remove the `.sample` extension) before running `terraform apply`.
+**Basic variables**
+
+The following variables: `symphony_ip`, `symp_access_key`, `symp_secret_key` are described [here](../ec2-instance/README.md).
+
+
+**web_number**
+
+Number of web servers (load balancer will automatically manage target groups).
+
+**web_ami***
+
+The AMI ID for the Xenial image you jsut uploaded into Symphony. It has a format like this:
+    
+ami-1b8ecb82893a4d1f9d500ce33d90496c
+
+**web_instance_type**
+
+The instance type you want to use for your web server(s). Example: t2.medium
+
+**public_keypair_path**
+
+The path to the public key file that Terraform will pass to Symhpony for authentication.
+
+Background: You can generate a kepair using a tool such as `ssh-keygen`. Place the public and private keys on the machine on which you are running Terraform, for example:
+
+/path/to/myKey.pub
+
+/path/to/myKey.pem
+
+In this example, you would set the `public_keypair_path` to `/path/to/myKey.pub`.
+
 
 ## How to use
 
 1. Get the most recent version of Terraform.
+
+2. Run `terraform init`.
 
 2. Run `terraform apply`
 
