@@ -74,6 +74,8 @@ Before you can use this Terraform example, you need to do the following tasks wi
 
     **Menu** > **Region Management** > **Settings** > **Services & Support** > click Database toggle to ON.
     
+    **Menu** > **Database** > **Engines** > MySQL 5.7.00 > toggle **Enabled** switch to ON.
+    
     
 ### Before you begin: edit `terraform.tfvars`
 
