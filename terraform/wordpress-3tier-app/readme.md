@@ -81,10 +81,11 @@ Before you can use this Terraform example, you need to do the following tasks wi
 
 Use the included `terraform.tfvars` file as a template. For each variable, fill in your environment-specific value, as described below:
 
-**Basic variables**
+_Basic variables_
 
-The following variables: `symphony_ip`, `symp_access_key`, `symp_secret_key` are described [here](../ec2-instance/README.md).
+The following variables: **symphony_ip**, **symp_access_key**, **symp_secret_key** are described [here](../ec2-instance/README.md).
 
+_Web server variables_
 
 **web_number**
 
@@ -110,7 +111,29 @@ Background: You can generate a kepair using a tool such as `ssh-keygen`. Place t
 
 /path/to/myKey.pem
 
-In this example, you would set the `public_keypair_path` to `/path/to/myKey.pub`.
+In this example, you would set the `public_keypair_path` to `/pa**th/to/myKey.pub`.
+
+**connect_instances_to_web_ip**
+
+Boolean. Controls whether or not you can SSH into the web server instances:
+
+`False`(default) isolates the web servers from SSH access into them.
+
+`True` lets you SSH into the web server instances for troubleshooting or other purposes. For more information, see the _SSH access_ info in the **How to use** section below. 
+
+_Database variables. Note that the Wordpress container uses the Wordpress database by default_
+
+**db_password**
+
+Database password.
+
+**db_user**
+
+Database user.
+
+**db_name**
+
+Database name.
 
 
 ## How to use
@@ -119,7 +142,7 @@ In this example, you would set the `public_keypair_path` to `/path/to/myKey.pub`
 
 2. Run `terraform init`.
 
-2. Run `terraform apply`
+2. Run `terraform apply`.
 
 
     
