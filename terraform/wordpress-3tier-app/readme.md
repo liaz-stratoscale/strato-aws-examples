@@ -142,25 +142,56 @@ Database name.
 
 2. Run `terraform init`.
 
-3. Run `terraform apply`. Take a look at the `terraform apply`output and note that it includes the elastic IP of the load balancer. Make a note of this load balancer IP, because you will need it later to access Wordpress.
+3. Run `terraform apply`. Take a look at the `terraform apply`output and note that it includes the elastic IP (EIP) of the load balancer. Make a note of this load balancer EIP, because you will need it later to access Wordpress.
 
 4. Point your browser to Wordpress at this location:
 
-    `http://<wordpress_ip>:80`
+    `http://<load_balancer_eip>:80`
 
     Initially, you will see the Wordpress installation and configuration pages.
 
-    How to get the _<wordpress_ip>_:
-
-    The Wordpress IP that you want here is the elastiic IP (EIP) of the load balancer:
+    **How to get the _<load_balancer_eip>_**:
 
     * This load balancer EIP was part of the output from `terraform apply`. You can always redisplay that output by running `terraform refresh`.
 
     * You can also get the load balancer EIP from the Symphony GUI:
 
-    **Menu** > **Load Balancing** > **Load Balancers** > select the load that Terraform just created
+        **Menu** > **Load Balancing** > **Load Balancers** > select the load balancer that Terraform just created.
 
-    The field marked **Floating IP** contains the load balancer EIP that you need to access Wordpress.
+        The field marked **Floating IP** contains the load balancer EIP that you need to access Wordpress.
+        
+### SSH access to web servers
+
+There may be times when you want to SSH into the web servers that are part of your Wordpress deployment. This can be for troubleshooting or other purposes:
+
+**To SSH into a web server**
+
+Here is a sample scenario:
+
+1. Make sure you know the path to where you stored your private key file on the machine where you are running Terraform, for example:
+
+    `/path/to/myKey.pem`
+
+2. Get the elastic IP (EIP) of the web server instance -- use either `terraform refresh` or the GUI:
+
+    **Menu** > **Compute** > **Intances** > instance name > **Networks** field -- see IP next to that
+    
+3. In the `terraform.tfvars` file, set `connect_instances_to_web_ip` to `True`. This enables SSH access into web instances.
+
+4. Run `terraform  apply`.
+
+5. SSH into the web server using syntax like this:
+
+    `ssh -i '/path/to/myKey.pem' ubuntu@<eip_of_web_server_instance>`
+   
+When you no longer need SSH access into the web server, you can reset it like this:
+
+Change `connect_instances_to_wepb_ip` back to `False`.
+
+Run `terraform apply` again.
+
+
+
 
 
 
