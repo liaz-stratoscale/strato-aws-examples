@@ -107,11 +107,11 @@ The path to the public key file that Terraform will pass to Symhpony for authent
 
 Background: You can generate a kepair using a tool such as `ssh-keygen`. Place the public and private keys on the machine on which you are running Terraform, for example:
 
-/path/to/myKey.pub
+Assume you put the public key file here: `/path/to/myKey.pub`
 
-/path/to/myKey.pem
+And you put the private key file here: `/path/to/myKey.pem`
 
-In this example, you would set the `public_keypair_path` to `/pa**th/to/myKey.pub`.
+In this example, you would set the `public_keypair_path` variable to `/path/to/myKey.pub`.
 
 **connect_instances_to_web_ip**
 
@@ -142,7 +142,27 @@ Database name.
 
 2. Run `terraform init`.
 
-2. Run `terraform apply`.
+3. Run `terraform apply`. Take a look at the `terraform apply`output and note that it includes the elastic IP of the load balancer. Make a note of this load balancer IP, because you will need it later to access Wordpress.
+
+4. Point your browser to Wordpress at this location:
+
+`http://<wordpress_ip>:80`
+
+Initially, you will see the Wordpress installation and configuration pages.
+
+How to get the _<wordpress_ip>_:
+
+The Wordpress IP that you want here is the elastiic IP (EIP) of the load balancer:
+
+* This load balancer EIP was part of the output from `terraform apply`. You can always redisplay that output by running `terraform refresh`.
+
+* You can also get the load balancer EIP from the Symphony GUI:
+
+**Menu** > **Load Balancing** > **Load Balancers** > select the load that Terraform just created
+
+The field marked **Floating IP** contains the load balancer EIP that you need to access Wordpress.
+
+
 
 
     
