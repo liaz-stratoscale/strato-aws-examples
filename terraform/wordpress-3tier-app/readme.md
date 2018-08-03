@@ -146,21 +146,21 @@ Database name.
 
 4. Point your browser to Wordpress at this location:
 
-`http://<wordpress_ip>:80`
+    `http://<wordpress_ip>:80`
 
-Initially, you will see the Wordpress installation and configuration pages.
+    Initially, you will see the Wordpress installation and configuration pages.
 
-How to get the _<wordpress_ip>_:
+    How to get the _<wordpress_ip>_:
 
-The Wordpress IP that you want here is the elastiic IP (EIP) of the load balancer:
+    The Wordpress IP that you want here is the elastiic IP (EIP) of the load balancer:
 
-* This load balancer EIP was part of the output from `terraform apply`. You can always redisplay that output by running `terraform refresh`.
+    * This load balancer EIP was part of the output from `terraform apply`. You can always redisplay that output by running `terraform refresh`.
 
-* You can also get the load balancer EIP from the Symphony GUI:
+    * You can also get the load balancer EIP from the Symphony GUI:
 
-**Menu** > **Load Balancing** > **Load Balancers** > select the load that Terraform just created
+    **Menu** > **Load Balancing** > **Load Balancers** > select the load that Terraform just created
 
-The field marked **Floating IP** contains the load balancer EIP that you need to access Wordpress.
+    The field marked **Floating IP** contains the load balancer EIP that you need to access Wordpress.
 
 
 
