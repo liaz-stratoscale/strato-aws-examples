@@ -9,4 +9,8 @@ variable "public_keypair_path" {}
 variable "db_password" {}
 variable "db_user" {}
 
+variable "run_idx" {
+  default = "1"
+}
+
 

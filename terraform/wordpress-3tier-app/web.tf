@@ -24,7 +24,7 @@ data "template_cloudinit_config" "wpdeploy_config" {
 
 resource "aws_key_pair" "app_keypair" {
   public_key = "${file(var.public_keypair_path)}"
-  key_name = "wp_app_kp"
+  key_name = "wp_app_kp_${var.run_idx}"
 }
 
 resource "aws_instance" "web-server" {
@@ -36,7 +36,7 @@ resource "aws_instance" "web-server" {
   key_name = "${aws_key_pair.app_keypair.key_name}"
 
   tags {
-    Name = "web-server-${count.index}"
+    Name = "web-server-${count.index}_${var.run_idx}"
   }
   count = "${var.web_number}"
   depends_on = ["aws_db_instance.wpdb"]
@@ -53,7 +53,7 @@ resource "aws_instance" "bastion" {
   subnet_id = "${aws_subnet.pub_subnet.id}"
 
   tags {
-    Name = "WordPress Bastion"
+    Name = "WordPress Bastion_${var.run_idx}"
   }
 }
 
@@ -75,7 +75,7 @@ output "web-server private ips" {
 }
 
 resource "aws_security_group" "web-sec" {
-  name = "webserver-secgroup"
+  name = "webserver-secgroup_${var.run_idx}"
   vpc_id = "${aws_vpc.app_vpc.id}"
 
   # Internal HTTP access from anywhere
@@ -110,7 +110,7 @@ resource "aws_security_group" "web-sec" {
 
 #public access sg 
 resource "aws_security_group" "pub" {
-  name = "pub-secgroup"
+  name = "pub-secgroup_${var.run_idx}"
   vpc_id = "${aws_vpc.app_vpc.id}"
 
   # ssh access from anywhere
@@ -130,7 +130,7 @@ resource "aws_security_group" "pub" {
 }
 
 resource "aws_security_group" "allout" {
-  name = "allout-secgroup"
+  name = "allout-secgroup_${var.run_idx}"
   vpc_id = "${aws_vpc.app_vpc.id}"
 
   egress {

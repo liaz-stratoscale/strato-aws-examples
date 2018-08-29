@@ -33,7 +33,7 @@ resource "aws_alb_listener" "list" {
 }
 
 resource "aws_security_group" "lb-sec" {
-  name = "lb-secgroup"
+  name = "lb-secgroup_${var.run_idx}"
   vpc_id = "${aws_vpc.app_vpc.id}"
 
   # HTTP access from anywhere

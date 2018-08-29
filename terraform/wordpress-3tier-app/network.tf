@@ -7,7 +7,7 @@ resource "aws_vpc" "app_vpc" {
   enable_dns_support = true
   enable_dns_hostnames = true
   tags {
-    Name = "WP Solution VPC"
+    Name = "WP Solution VPC_${var.run_idx}"
   }
 }
 
@@ -33,7 +33,7 @@ resource "aws_subnet" "pub_subnet"{
   vpc_id = "${aws_vpc.app_vpc.id}"
   cidr_block = "192.168.10.0/24"
   tags {
-      Name = "public subnet"
+      Name = "public subnet_${var.run_idx}"
   }
   depends_on = ["aws_vpc_dhcp_options_association.dns_resolver"]
 }
@@ -43,7 +43,7 @@ resource "aws_subnet" "web_subnet" {
   vpc_id = "${aws_vpc.app_vpc.id}"
   cidr_block = "192.168.20.0/24"
   tags {
-    Name = "web server subnet"
+    Name = "web server subnet_${var.run_idx}"
   }
   depends_on = ["aws_vpc_dhcp_options_association.dns_resolver"]
 }
@@ -53,7 +53,7 @@ resource "aws_subnet" "db_subnet" {
   vpc_id = "${aws_vpc.app_vpc.id}"
   cidr_block = "192.168.30.0/24"
   tags {
-    Name = "database subnet"
+    Name = "database subnet_${var.run_idx}"
   }
   depends_on = ["aws_vpc_dhcp_options_association.dns_resolver"]
 }

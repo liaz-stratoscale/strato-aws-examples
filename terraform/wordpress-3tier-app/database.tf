@@ -2,17 +2,17 @@
 
 #make db subnet group 
 resource "aws_db_subnet_group" "dbsubnet" {
-  name       = "main"
+  name       = "main-${var.run_idx}"
   subnet_ids = ["${aws_subnet.db_subnet.id}"]
 }
 
 #provision the database
 resource "aws_db_instance" "wpdb" {
-  identifier = "wpdb"
+  identifier = "wpdb-${var.run_idx}"
   instance_class = "db.m1.large"
   allocated_storage = 20
   engine = "mysql"
-  name = "wordpress_db"
+  name = "wordpress_db_${var.run_idx}"
   password = "${var.db_password}"
   username = "${var.db_user}"
   engine_version = "5.7.00"
@@ -26,7 +26,7 @@ resource "aws_db_instance" "wpdb" {
 }
 
 resource "aws_security_group" "db" {
-  name = "db-secgroup"
+  name = "db-secgroup_${var.run_idx}"
   vpc_id = "${aws_vpc.app_vpc.id}"
 
   # ssh access from anywhere
