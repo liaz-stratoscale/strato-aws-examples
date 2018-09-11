@@ -21,7 +21,7 @@ resource "aws_db_instance" "wpdb" {
   vpc_security_group_ids = ["${aws_security_group.db.id}"]
   # Workaround for Symphony 
   lifecycle {
-    ignore_changes = ["engine"]
+    ignore_changes = ["engine", "auto_minor_version_upgrade", "vpc_security_group_ids"]
   }
 }
 
