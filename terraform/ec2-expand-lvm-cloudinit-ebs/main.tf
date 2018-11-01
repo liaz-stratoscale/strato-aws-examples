@@ -31,7 +31,7 @@ resource "aws_instance" "ec2_instance" {
     user_data = "${data.template_cloudinit_config.ebsdeploy_config.rendered}"
 
     root_block_device { 
-        # Enter larger volume size here in GB, must be larger then images base size
+        # Enter larger volume size here in GB, must be larger than images base size
         volume_size = 250
     }
 
