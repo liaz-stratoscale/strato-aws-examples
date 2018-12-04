@@ -7,11 +7,7 @@
     "region": "symphony",
     "communicator": "ssh",
     "skip_region_validation": true,
-    "source_ami_filter": {
-      "filters": {
-      "image-id": "${packer_ami_image}"
-      }
-    },
+    "source_ami": "${packer_ami_image}",
     "subnet_id": "${subnet_id}",
     "vpc_id": "${vpc_id}",
     "security_group_ids": [${sg_ids}],
