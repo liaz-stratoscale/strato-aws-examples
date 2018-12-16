@@ -32,6 +32,13 @@ the AWS_PROFILE variable:
 
 For more details, see: http://docs.pythonboto.org/en/latest/boto_config_tut.html
 
+You can filter for specific EC2 instances by creating an environment variable
+named EC2_INSTANCE_FILTERS, which has the same format as the instance_filters
+entry documented in ec2.ini.  For example, to find all hosts whose name begins
+with 'webserver', one might use:
+
+    export EC2_INSTANCE_FILTERS='tag:Name=webserver*'
+
 When run against a specific host, this script returns the following variables:
  - ec2_ami_launch_index
  - ec2_architecture
@@ -152,6 +159,7 @@ import os
 import argparse
 import re
 from time import time
+from copy import deepcopy
 import boto
 from boto import ec2
 from boto import rds
@@ -172,10 +180,7 @@ except ImportError:
 from six.moves import configparser
 from collections import defaultdict
 
-try:
-    import json
-except ImportError:
-    import simplejson as json
+import json
 
 DEFAULTS = {
     'all_elasticache_clusters': 'False',
@@ -183,18 +188,16 @@ DEFAULTS = {
     'all_elasticache_replication_groups': 'False',
     'all_instances': 'False',
     'all_rds_instances': 'False',
-    'aws_access_key_id': None,
-    'aws_secret_access_key': None,
-    'aws_security_token': None,
-    'boto_profile': None,
+    'aws_access_key_id': '',
+    'aws_secret_access_key': '',
+    'aws_security_token': '',
+    'boto_profile': '',
     'cache_max_age': '300',
     'cache_path': '~/.ansible/tmp',
     'destination_variable': 'public_dns_name',
     'elasticache': 'True',
     'eucalyptus': 'False',
-    'eucalyptus_host': None,
-    'symphony': 'False',
-    'symphony_host': None,
+    'eucalyptus_host': '',
     'expand_csv_tags': 'False',
     'group_by_ami_id': 'True',
     'group_by_availability_zone': 'True',
@@ -216,19 +219,19 @@ DEFAULTS = {
     'group_by_tag_keys': 'True',
     'group_by_tag_none': 'True',
     'group_by_vpc_id': 'True',
-    'hostname_variable': None,
-    'iam_role': None,
+    'hostname_variable': '',
+    'iam_role': '',
     'include_rds_clusters': 'False',
     'nested_groups': 'False',
-    'pattern_exclude': None,
-    'pattern_include': None,
+    'pattern_exclude': '',
+    'pattern_include': '',
     'rds': 'False',
     'regions': 'all',
     'regions_exclude': 'us-gov-west-1, cn-north-1',
     'replace_dash_in_groups': 'True',
     'route53': 'False',
     'route53_excluded_zones': '',
-    'route53_hostnames': None,
+    'route53_hostnames': '',
     'stack_filters': 'False',
     'vpc_destination_variable': 'ip_address'
 }
@@ -346,20 +349,20 @@ class Ec2Inventory(object):
 
         # Regions
         self.regions = []
-        configRegions = config.get('ec2', 'regions')
-        if (configRegions == 'all'):
+        config_regions = config.get('ec2', 'regions')
+        if (config_regions == 'all'):
             if self.eucalyptus_host:
                 self.regions.append(boto.connect_euca(host=self.eucalyptus_host).region.name, **self.credentials)
-	    elif self.symphony_host:
+            elif self.symphony_host:
                 self.regions.append('symphony')
             else:
-                configRegions_exclude = config.get('ec2', 'regions_exclude')
+                config_regions_exclude = config.get('ec2', 'regions_exclude')
 
-                for regionInfo in ec2.regions():
-                    if regionInfo.name not in configRegions_exclude:
-                        self.regions.append(regionInfo.name)
+                for region_info in ec2.regions():
+                    if region_info.name not in config_regions_exclude:
+                        self.regions.append(region_info.name)
         else:
-            self.regions = configRegions.split(",")
+            self.regions = config_regions.split(",")
         if 'auto' in self.regions:
             env_region = os.environ.get('AWS_REGION')
             if env_region is None:
@@ -464,6 +467,7 @@ class Ec2Inventory(object):
         cache_id = self.boto_profile or os.environ.get('AWS_ACCESS_KEY_ID', self.credentials.get('aws_access_key_id'))
         if cache_id:
             cache_name = '%s-%s' % (cache_name, cache_id)
+        cache_name += '-' + str(abs(hash(__file__)))[1:7]
         self.cache_path_cache = os.path.join(cache_dir, "%s.cache" % cache_name)
         self.cache_path_index = os.path.join(cache_dir, "%s.index" % cache_name)
         self.cache_max_age = config.getint('ec2', 'cache_max_age')
@@ -501,8 +505,8 @@ class Ec2Inventory(object):
         # Instance filters (see boto and EC2 API docs). Ignore invalid filters.
         self.ec2_instance_filters = []
 
-        if config.has_option('ec2', 'instance_filters'):
-            filters = config.get('ec2', 'instance_filters')
+        if config.has_option('ec2', 'instance_filters') or 'EC2_INSTANCE_FILTERS' in os.environ:
+            filters = os.getenv('EC2_INSTANCE_FILTERS', config.get('ec2', 'instance_filters') if config.has_option('ec2', 'instance_filters') else '')
 
             if self.stack_filters and '&' in filters:
                 self.fail_with_error("AND filters along with stack_filter enabled is not supported.\n")
@@ -561,7 +565,13 @@ class Ec2Inventory(object):
             conn = boto.connect_euca(host=self.eucalyptus_host, **self.credentials)
             conn.APIVersion = '2010-08-31'
         elif self.symphony:
-            conn = boto.connect_ec2_endpoint(url=self.symphony_host, **self.credentials)
+            if not HAS_BOTO3:
+                self.fail_with_error("Working with Stratoscale Symphony requires boto3 - please install boto3 and try again")
+            conn = boto3.client(service_name="ec2", region_name="symphony",
+                                endpoint_url=self.symphony_host,
+                                verify=False,
+                                aws_access_key_id = self.credentials['aws_access_key_id'],
+                                aws_secret_access_key=self.credentials['aws_secret_access_key'])
         else:
             conn = self.connect_to_aws(ec2, region)
         return conn
@@ -574,7 +584,7 @@ class Ec2Inventory(object):
         return connect_args
 
     def connect_to_aws(self, module, region):
-        connect_args = self.credentials
+        connect_args = deepcopy(self.credentials)
 
         # only pass the profile name if it's set (as it is not supported by older boto versions)
         if self.boto_profile:
@@ -611,30 +621,31 @@ class Ec2Inventory(object):
                     for filters in self.ec2_instance_filters:
                         reservations.extend(conn.get_all_instances(filters=filters))
             else:
-                reservations = conn.get_all_instances()
+                reservations = conn.describe_instances()['Reservations']
 
             # Pull the tags back in a second step
             # AWS are on record as saying that the tags fetched in the first `get_all_instances` request are not
             # reliable and may be missing, and the only way to guarantee they are there is by calling `get_all_tags`
             instance_ids = []
             for reservation in reservations:
-                instance_ids.extend([instance.id for instance in reservation.instances])
+                instance_ids.extend([instance['InstanceId'] for instance in reservation['Instances']])
 
             max_filter_value = 199
             tags = []
             for i in range(0, len(instance_ids), max_filter_value):
-                tags.extend(conn.get_all_tags(filters={'resource-type': 'instance', 'resource-id': instance_ids[i:i + max_filter_value]}))
+                tags.extend(conn.describe_tags(Filters=[{'Name': 'resource-id', 'Values': instance_ids[i:i + max_filter_value]}])['Tags'])
+                # tags.extend(conn.get_all_tags(filters={'resource-type': 'instance', 'resource-id': instance_ids[i:i + max_filter_value]}))
 
             tags_by_instance_id = defaultdict(dict)
             for tag in tags:
-                tags_by_instance_id[tag.res_id][tag.name] = tag.value
+                tags_by_instance_id[tag['ResourceId']][tag['Key']] = tag['Value']
 
             if (not self.aws_account_id) and reservations:
-                self.aws_account_id = reservations[0].owner_id
+                self.aws_account_id = reservations[0]['OwnerId']
 
             for reservation in reservations:
-                for instance in reservation.instances:
-                    instance.tags = tags_by_instance_id[instance.id]
+                for instance in reservation['Instances']:
+                    instance['Tags'] = tags_by_instance_id[instance['InstanceId']]
                     self.add_instance(instance, region)
 
         except boto.exception.BotoServerError as e:
@@ -784,13 +795,26 @@ class Ec2Inventory(object):
         # ElastiCache boto module doesn't provide a get_all_instances method,
         # that's why we need to call describe directly (it would be called by
         # the shorthand method anyway...)
+        clusters = []
         try:
             conn = self.connect_to_aws(elasticache, region)
             if conn:
                 # show_cache_node_info = True
                 # because we also want nodes' information
-                response = conn.describe_cache_clusters(None, None, None, True)
-
+                _marker = 1
+                while _marker:
+                    if _marker == 1:
+                        _marker = None
+                    response = conn.describe_cache_clusters(None, None, _marker, True)
+                    _marker = response['DescribeCacheClustersResponse']['DescribeCacheClustersResult']['Marker']
+                    try:
+                        # Boto also doesn't provide wrapper classes to CacheClusters or
+                        # CacheNodes. Because of that we can't make use of the get_list
+                        # method in the AWSQueryConnection. Let's do the work manually
+                        clusters = clusters + response['DescribeCacheClustersResponse']['DescribeCacheClustersResult']['CacheClusters']
+                    except KeyError as e:
+                        error = "ElastiCache query to AWS failed (unexpected format)."
+                        self.fail_with_error(error, 'getting ElastiCache clusters')
         except boto.exception.BotoServerError as e:
             error = e.reason
 
@@ -802,16 +826,6 @@ class Ec2Inventory(object):
                     "or set 'elasticache = False' in ec2.ini"
             elif not e.reason == "Forbidden":
                 error = "Looks like AWS ElastiCache is down:\n%s" % e.message
-            self.fail_with_error(error, 'getting ElastiCache clusters')
-
-        try:
-            # Boto also doesn't provide wrapper classes to CacheClusters or
-            # CacheNodes. Because of that we can't make use of the get_list
-            # method in the AWSQueryConnection. Let's do the work manually
-            clusters = response['DescribeCacheClustersResponse']['DescribeCacheClustersResult']['CacheClusters']
-
-        except KeyError as e:
-            error = "ElastiCache query to AWS failed (unexpected format)."
             self.fail_with_error(error, 'getting ElastiCache clusters')
 
         for cluster in clusters:
@@ -889,7 +903,7 @@ class Ec2Inventory(object):
         addressable '''
 
         # Only return instances with desired instance states
-        if instance.state not in self.ec2_instance_states:
+        if instance['State']['Name'] not in self.ec2_instance_states:
             return
 
         # Select the best destination address
@@ -909,12 +923,12 @@ class Ec2Inventory(object):
                     dest_vars.append('nil')
 
             dest = self.destination_format.format(*dest_vars)
-        elif instance.subnet_id:
-            dest = getattr(instance, self.vpc_destination_variable, None)
+        elif instance['SubnetId']:
+            dest = instance.get(self.vpc_destination_variable, None)
             if dest is None:
                 dest = getattr(instance, 'tags').get(self.vpc_destination_variable, None)
         else:
-            dest = getattr(instance, self.destination_variable, None)
+            dest = instance.get(self.destination_variable, None)
             if dest is None:
                 dest = getattr(instance, 'tags').get(self.destination_variable, None)
 
@@ -926,9 +940,9 @@ class Ec2Inventory(object):
         hostname = None
         if self.hostname_variable:
             if self.hostname_variable.startswith('tag_'):
-                hostname = instance.tags.get(self.hostname_variable[4:], None)
+                hostname = instance['Tags'].get(self.hostname_variable[4:], None)
             else:
-                hostname = getattr(instance, self.hostname_variable)
+                hostname = instance.get(self.hostname_variable)
 
         # set the hostname from route53
         if self.route53_enabled and self.route53_hostnames:
@@ -955,13 +969,13 @@ class Ec2Inventory(object):
             return
 
         # Add to index
-        self.index[hostname] = [region, instance.id]
+        self.index[hostname] = [region, instance['InstanceId']]
 
         # Inventory: Group by instance ID (always a group of 1)
         if self.group_by_instance_id:
-            self.inventory[instance.id] = [hostname]
+            self.inventory[instance['InstanceId']] = [hostname]
             if self.nested_groups:
-                self.push_group(self.inventory, 'instances', instance.id)
+                self.push_group(self.inventory, 'instances', instance['InstanceId'])
 
         # Inventory: Group by region
         if self.group_by_region:
@@ -979,29 +993,29 @@ class Ec2Inventory(object):
 
         # Inventory: Group by Amazon Machine Image (AMI) ID
         if self.group_by_ami_id:
-            ami_id = self.to_safe(instance.image_id)
+            ami_id = self.to_safe(instance['ImageId'])
             self.push(self.inventory, ami_id, hostname)
             if self.nested_groups:
                 self.push_group(self.inventory, 'images', ami_id)
 
         # Inventory: Group by instance type
         if self.group_by_instance_type:
-            type_name = self.to_safe('type_' + instance.instance_type)
+            type_name = self.to_safe('type_' + instance['InstanceType'])
             self.push(self.inventory, type_name, hostname)
             if self.nested_groups:
                 self.push_group(self.inventory, 'types', type_name)
 
         # Inventory: Group by instance state
         if self.group_by_instance_state:
-            state_name = self.to_safe('instance_state_' + instance.state)
+            state_name = self.to_safe('instance_state_' + instance['State']['Name'])
             self.push(self.inventory, state_name, hostname)
             if self.nested_groups:
                 self.push_group(self.inventory, 'instance_states', state_name)
 
         # Inventory: Group by platform
         if self.group_by_platform:
-            if instance.platform:
-                platform = self.to_safe('platform_' + instance.platform)
+            if instance.get('Platform'):
+                platform = self.to_safe('platform_' + instance['Platform'])
             else:
                 platform = self.to_safe('platform_undefined')
             self.push(self.inventory, platform, hostname)
@@ -1009,15 +1023,15 @@ class Ec2Inventory(object):
                 self.push_group(self.inventory, 'platforms', platform)
 
         # Inventory: Group by key pair
-        if self.group_by_key_pair and instance.key_name:
-            key_name = self.to_safe('key_' + instance.key_name)
+        if self.group_by_key_pair and instance.get('KeyName'):
+            key_name = self.to_safe('key_' + instance['KeyName'])
             self.push(self.inventory, key_name, hostname)
             if self.nested_groups:
                 self.push_group(self.inventory, 'keys', key_name)
 
         # Inventory: Group by VPC
-        if self.group_by_vpc_id and instance.vpc_id:
-            vpc_id_name = self.to_safe('vpc_id_' + instance.vpc_id)
+        if self.group_by_vpc_id and instance.get('VpcId'):
+            vpc_id_name = self.to_safe('vpc_id_' + instance['VpcId'])
             self.push(self.inventory, vpc_id_name, hostname)
             if self.nested_groups:
                 self.push_group(self.inventory, 'vpcs', vpc_id_name)
@@ -1025,8 +1039,8 @@ class Ec2Inventory(object):
         # Inventory: Group by security group
         if self.group_by_security_group:
             try:
-                for group in instance.groups:
-                    key = self.to_safe("security_group_" + group.name)
+                for group in instance['SecurityGroups']:
+                    key = self.to_safe("security_group_" + group['GroupName'])
                     self.push(self.inventory, key, hostname)
                     if self.nested_groups:
                         self.push_group(self.inventory, 'security_groups', key)
@@ -1042,7 +1056,7 @@ class Ec2Inventory(object):
 
         # Inventory: Group by tag keys
         if self.group_by_tag_keys:
-            for k, v in instance.tags.items():
+            for k, v in instance['Tags'].items():
                 if self.expand_csv_tags and v and ',' in v:
                     values = map(lambda x: x.strip(), v.split(','))
                 else:
@@ -1068,7 +1082,7 @@ class Ec2Inventory(object):
                     self.push_group(self.inventory, 'route53', name)
 
         # Global Tag: instances without tags
-        if self.group_by_tag_none and len(instance.tags) == 0:
+        if self.group_by_tag_none and len(instance['Tags']) == 0:
             self.push(self.inventory, 'tag_none', hostname)
             if self.nested_groups:
                 self.push_group(self.inventory, 'tags', 'tag_none')
@@ -1489,8 +1503,8 @@ class Ec2Inventory(object):
 
     def get_host_info_dict_from_instance(self, instance):
         instance_vars = {}
-        for key in vars(instance):
-            value = getattr(instance, key)
+        for key in instance.keys():
+            value = instance.get(key)
             key = self.to_safe('ec2_' + key)
 
             # Handle complex types
