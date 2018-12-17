@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+scp -o "StrictHostKeyChecking=no" -i id_rsa id_rsa centos@${bastion_hostname}:/home/centos/.ssh/
+scp -o "StrictHostKeyChecking=no" -i id_rsa ansible-hosts centos@${bastion_hostname}:/home/centos/
+ssh -o "StrictHostKeyChecking=no" -i id_rsa centos@${bastion_hostname} "cd /openshift-ansible/; ansible-playbook /openshift-ansible/playbooks/prerequisites.yml -i /home/centos/ansible-hosts"
+ssh -o "StrictHostKeyChecking=no" -i id_rsa centos@${bastion_hostname} "cd /openshift-ansible/; ansible-playbook /openshift-ansible/playbooks/deploy_cluster.yml -i /home/centos/ansible-hosts"

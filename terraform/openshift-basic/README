@@ -1,0 +1,10 @@
+
+1) Get Centos image from:
+https://cloud.centos.org/centos/7/images/
+2) Create ssh key pair
+3) Update terraform.tfvars
+4) Run TF
+5) Copy private key into the bastion VM centos@<bastion-vm>:/home/centos/.ssh/
+6) Copy ansible-hosts file into the bastion VM centos@<bastion-vm>:/home/centos/
+7) Wait about 3 mins until VM finishes setting up
+8) run build-os.sh
