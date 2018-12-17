@@ -1,0 +1,35 @@
+[OSEv3:children]
+masters
+etcd
+nodes
+
+[OSEv3:vars]
+ansible_ssh_user=centos
+ansible_become=true
+openshift_deployment_type=origin
+
+openshift_release=v3.11
+
+openshift_check_min_host_memory_gb=8
+openshift_disable_check=docker_image_availability,docker_storage,disk_availability
+
+containerized=true
+openshift_install_examples=true
+openshift_metrics_install_metrics=false
+openshift_metrics_start_cluster=false
+
+openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider'}]
+
+openshift_master_default_subdomain=${public_subdomain}
+
+[masters]
+${master_hostname} openshift_hostname=${master_hostname} openshift_hostname=${master_hostname} openshift_public_hostname=${admin_hostname}
+
+[etcd]
+${master_hostname} openshift_hostname=${master_hostname}
+
+[nodes]
+## Primary endpoint on master
+${master_hostname} openshift_node_group_name='node-config-master'
+${infra_hostname} openshift_hostname=${infra_hostname} openshift_node_group_name='node-config-infra'
+${worker_hostname} openshift_hostname=${worker_hostname} openshift_node_group_name='node-config-compute'

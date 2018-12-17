@@ -1,0 +1,16 @@
+
+1) Get Centos image from: https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
+2) Create ssh key pair
+3) Update terraform.tfvars
+4) Run TF
+5) Reboot Master, Worker and Infra through Symphony UI. This will cause update of metadata server
+6) ssh into the Bastion node and run:
+   >> ansible-playbook /home/centos/openshift_ansible_3_11/playbooks/deploy_cluster.yml -i /home/centos/ansible-hosts --key-file=/home/centos/.ssh/<KP file> --ssh-common-args='-o StrictHostKeyChecking=no'
+   >> ansible-playbook /home/centos/openshift_ansible_3_11/playbooks/prerequisites.yml -i /home/centos/ansible-hosts --key-file=/home/centos/.ssh/<KP file> --ssh-common-args='-o StrictHostKeyChecking=no'
+7) After installation is completed set the admin account in Openshift master.
+   a) ssh to master node
+   b) run:
+      >> htpasswd -b /etc/origin/master/htpasswd ${USERNAME} ${PASSWORD}
+      >> oc adm policy add-cluster-role-to-user cluster-admin ${USERNAME}
+8) Log in to the Openshift console with admin account
+   https://console.<master ip>.xip.io
