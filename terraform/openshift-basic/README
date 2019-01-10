@@ -1,6 +1,6 @@
 
 1) Get Centos image from: https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
-2) Create ssh key pair
+2) Create ssh key pair using ssh-keygen. Do not create the keypair in Symphony UI
 3) Update terraform.tfvars
 4) Run TF
 5) Reboot Master, Worker and Infra through Symphony UI. This will cause update of metadata server
