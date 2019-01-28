@@ -16,5 +16,5 @@ output "worker_ip" {
 
 
 output "console_url" {
-  value = "https://console.${aws_eip.master_eip.public_ip}.xip.io"
+  value = "https://console.${aws_eip.master_eip.public_ip}.xip.io:8443"
 }

@@ -23,27 +23,42 @@ variable "aws_ami" {}
 variable "bastion_key_path" {
   description = "My public ssh key"
 }
+variable "bastion_private_key_path" {
+  description = "Bastion private ssh key"
+}
 variable "openshift_key_path" {
-  description = "My public ssh key"
+  description = "Openshift public ssh key"
 }
 variable "openshift_private_key_path" {
-  description = "My public ssh key"
+  description = "Openshift private ssh key"
 }
+
 variable "bastion_key_name" {
   description = "Desired name of AWS key pair"
   default     = "bastion"
 }
+
 variable "openshift_key_name" {
   description = "Desired name of AWS key pair"
   default     = "openshift"
 }
 
+##
+## Openshift admin credentials
+##
+variable "openshift_admin_username" {
+  description = "Desired Openshift admin username"
+}
+
+variable "openshift_admin_password" {
+  description = "Desired Openshift admin password"
+}
 
 ##
 ## VPC
 ##
 variable "vpc_cidr" {
-  default = "20.0.0.0/16"
+  default = "192.168.0.0/16"
   description = "the vpc cdir range"
 }
 
@@ -51,7 +66,7 @@ variable "vpc_cidr" {
 ## Subnets
 ##
 variable "public_subnet" {
-  default = "20.0.0.0/24"
+  default = "192.168.10.0/24"
   description = "Public subnet"
 }
 

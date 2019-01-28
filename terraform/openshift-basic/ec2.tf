@@ -30,15 +30,11 @@ resource "aws_instance" "bastion" {
 }
 
 resource "null_resource" "init_bastion" {
-  triggers {
-    bastion_id = "${aws_instance.bastion.id}"
-  }
-
   connection {
     type = "ssh"
     user = "centos"
-    host = "${aws_instance.bastion.public_ip}"
-    private_key = "${file(var.openshift_private_key_path)}"
+    host = "${aws_eip.bastion_eip.public_ip}"
+    private_key = "${file(var.bastion_private_key_path)}"
     agent = "false"
   }
 
@@ -59,15 +55,11 @@ resource "null_resource" "init_bastion" {
 }
 
 resource "null_resource" "copy_hosts_file_to_bastion" {
-  triggers {
-    openshift_ids = "${list(aws_instance.master.id, aws_instance.worker.id, aws_instance.infra.id)}"
-  }
-
   connection {
     type = "ssh"
     user = "centos"
-    host = "${aws_instance.bastion.public_ip}"
-    private_key = "${file(var.openshift_private_key_path)}"
+    host = "${aws_eip.bastion_eip.public_ip}"
+    private_key = "${file(var.bastion_private_key_path)}"
     agent = "false"
   }
 
@@ -94,10 +86,6 @@ resource "aws_instance" "master" {
 }
 
 resource "null_resource" "init_master" {
-  triggers {
-    id = "${aws_instance.master.id}"
-  }
-
   provisioner "remote-exec" {
 
     script = "./scripts/prep-openshift.sh"
@@ -116,14 +104,10 @@ resource "null_resource" "init_master" {
 # to this bug https://bugzilla.redhat.com/show_bug.cgi?id=1625911
 # It comes up with bogus hostname blabla.novalocal due to JIRA ????
 resource "null_resource" "set_master_hostname" {
-  triggers {
-    id = "${aws_instance.master.id}"
-  }
-
   provisioner "remote-exec" {
 
     inline = [
-      "sudo hostnamectl set-hostname ${aws_instance.master.private_dns}",
+      "sudo sh -c \"echo ${aws_instance.master.private_dns} > /etc/hostname\"",
     ]
 
     connection {
@@ -151,10 +135,6 @@ resource "aws_instance" "worker" {
 }
 
 resource "null_resource" "init_worker" {
-  triggers {
-    id = "${aws_instance.worker.id}"
-  }
-
   provisioner "remote-exec" {
 
     script = "./scripts/prep-openshift.sh"
@@ -170,14 +150,10 @@ resource "null_resource" "init_worker" {
 }
 
 resource "null_resource" "set_worker_hostname" {
-  triggers {
-    id = "${aws_instance.worker.id}"
-  }
-
   provisioner "remote-exec" {
 
     inline = [
-      "sudo hostnamectl set-hostname ${aws_instance.worker.private_dns}",
+      "sudo sh -c \"echo ${aws_instance.worker.private_dns} > /etc/hostname\"",
     ]
 
     connection {
@@ -205,11 +181,6 @@ resource "aws_instance" "infra" {
 }
 
 resource "null_resource" "init_infra" {
-
-  triggers {
-    id = "${aws_instance.infra.id}"
-  }
-
   provisioner "remote-exec" {
 
     script = "./scripts/prep-openshift.sh"
@@ -225,14 +196,10 @@ resource "null_resource" "init_infra" {
 }
 
 resource "null_resource" "set_infra_hostname" {
-  triggers {
-    id = "${aws_instance.infra.id}"
-  }
-
   provisioner "remote-exec" {
 
     inline = [
-      "sudo hostnamectl set-hostname ${aws_instance.infra.private_dns}",
+      "sudo sh -c \"echo ${aws_instance.infra.private_dns} > /etc/hostname\"",
     ]
 
     connection {

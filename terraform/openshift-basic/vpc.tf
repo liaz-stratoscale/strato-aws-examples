@@ -32,6 +32,7 @@ resource "aws_subnet" "PublicSubnet" {
   tags {
         Name = "Public Subnet"
   }
+  depends_on = ["aws_vpc_dhcp_options_association.dns_resolver"]
 }
 
 ##
@@ -62,20 +63,24 @@ resource "aws_route" "PublicRoute" {
 resource "aws_eip" "bastion_eip" {
   instance = "${aws_instance.bastion.id}"
   vpc      = true
+  depends_on = ["aws_internet_gateway.gw"]
 }
 
 resource "aws_eip" "master_eip" {
   instance = "${aws_instance.master.id}"
   vpc      = true
+  depends_on = ["aws_internet_gateway.gw"]
 }
 
 resource "aws_eip" "worker_eip" {
   instance = "${aws_instance.worker.id}"
   vpc      = true
+  depends_on = ["aws_internet_gateway.gw"]
 }
 
 resource "aws_eip" "infra_eip" {
   instance = "${aws_instance.infra.id}"
   vpc      = true
+  depends_on = ["aws_internet_gateway.gw"]
 }
 

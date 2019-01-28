@@ -4,13 +4,12 @@
 3) Update terraform.tfvars
 4) Run TF
 5) Reboot Master, Worker and Infra through Symphony UI. This will cause update of metadata server
-6) ssh into the Bastion node and run:
-   >> ansible-playbook /home/centos/openshift_ansible_3_11/playbooks/deploy_cluster.yml -i /home/centos/ansible-hosts --key-file=/home/centos/.ssh/<KP file> --ssh-common-args='-o StrictHostKeyChecking=no'
+6) After reboot Openshift nodes require reinit of their hostnames
+   a)  run ./set_hostname.sh from this folder
+7) ssh into the Bastion node and run:
    >> ansible-playbook /home/centos/openshift_ansible_3_11/playbooks/prerequisites.yml -i /home/centos/ansible-hosts --key-file=/home/centos/.ssh/<KP file> --ssh-common-args='-o StrictHostKeyChecking=no'
-7) After installation is completed set the admin account in Openshift master.
-   a) ssh to master node
-   b) run:
-      >> htpasswd -b /etc/origin/master/htpasswd ${USERNAME} ${PASSWORD}
-      >> oc adm policy add-cluster-role-to-user cluster-admin ${USERNAME}
-8) Log in to the Openshift console with admin account
-   https://console.<master ip>.xip.io
+   >> ansible-playbook /home/centos/openshift_ansible_3_11/playbooks/deploy_cluster.yml -i /home/centos/ansible-hosts --key-file=/home/centos/.ssh/<KP file> --ssh-common-args='-o StrictHostKeyChecking=no'
+8) After installation is completed set the admin account in Openshift master.
+   a) run ./set_admin.sh from this folder
+9) Log in to the Openshift console with admin account
+   https://console.<master ip>.xip.io:8443
