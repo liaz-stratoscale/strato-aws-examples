@@ -23,13 +23,13 @@ openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 
 openshift_master_default_subdomain=${public_subdomain}
 
 [masters]
-${master_hostname} openshift_hostname=${master_hostname} openshift_hostname=${master_hostname} openshift_public_hostname=${admin_hostname}
+${master_hostname} openshift_public_hostname=${admin_hostname}
 
 [etcd]
-${master_hostname} openshift_hostname=${master_hostname}
+${master_hostname}
 
 [nodes]
 ## Primary endpoint on master
 ${master_hostname} openshift_node_group_name='node-config-master'
-${infra_hostname} openshift_hostname=${infra_hostname} openshift_node_group_name='node-config-infra'
-${worker_hostname} openshift_hostname=${worker_hostname} openshift_node_group_name='node-config-compute'
+${infra_hostname}  openshift_node_group_name='node-config-infra'
+${worker_hostname} openshift_node_group_name='node-config-compute'
