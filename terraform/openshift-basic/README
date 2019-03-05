@@ -3,8 +3,8 @@
 2) Create ssh key pair using ssh-keygen. Do not create the keypair in Symphony UI
 3) Update terraform.tfvars
 4) Run TF
-5) Reboot Master, Worker and Infra through Symphony UI. This will cause update of metadata server
-6) After reboot Openshift nodes require reinit of their hostnames
+5) Reboot Master, Worker and Infra through Symphony UI. This will cause update of metadata server - BK-6837
+6) After reboot Openshift nodes require reinit of their hostnames - BK-6837
    a)  run ./set_hostname.sh from this folder
 7) ssh into the Bastion node and run:
    >> ansible-playbook /home/centos/openshift_ansible_3_11/playbooks/prerequisites.yml -i /home/centos/ansible-hosts --key-file=/home/centos/.ssh/<KP file> --ssh-common-args='-o StrictHostKeyChecking=no'
