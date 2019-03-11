@@ -15,6 +15,7 @@ resource "null_resource" "create_k8s_cluster" {
       "k8s_count" = "${var.k8s_count}"
       "k8s_type" = "${var.k8s_type}"
       "k8s_eip" = "${var.k8s_eip}"
+      "k8s_confile" = "${var.k8s_configfile_path}"
     }
   }
 }

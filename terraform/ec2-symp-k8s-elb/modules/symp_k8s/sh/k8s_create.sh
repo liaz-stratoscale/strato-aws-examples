@@ -4,7 +4,19 @@ set -e
 
 function error_exit() {
   echo "$1"
-  exit
+  exit 1
+}
+
+function write_configfile_and_exit() {
+  RESULT=$(curl -s -k -X GET "https://${symp_host}/api/v2/kubernetes/clusters/${K8S_ID}/fetch_kube_config" -H "x-auth-token: $TOKEN" -H "content-type: application/json")
+  echo "DEBUG: RESULT = ${RESULT}"
+
+  PUBLICADDRESS=$(jq -r ".public_address" <<< "${RESULT}")
+  echo "DEBUG: PUBLICADDRESS = ${PUBLICADDRESS}"
+  KUBECONFIG=$(jq -r ".kubeconfig" <<< "${RESULT}")
+  echo "${KUBECONFIG}" | sed "s|https.*6443|$PUBLICADDRESS|g" > "${k8s_confile}"
+  echo "End logging" >> test.log
+  exit 0
 }
 
 function check_deps() {
@@ -72,7 +84,7 @@ function check_if_exists_k8s_cluster() {
     K8S_ID=$(jq -r ".id" <<< "${FOUND_CLUSTER}")
     echo "DEBUG: K8S_ID = ${K8S_ID}"
     wait_for_k8s_active
-    exit 0
+    write_configfile_and_exit
   fi
 }
 
@@ -131,4 +143,4 @@ get_engine_version_id
 check_if_exists_k8s_cluster
 create_k8s_cluster
 wait_for_k8s_active
-echo "End logging" >> test.log
+write_configfile_and_exit

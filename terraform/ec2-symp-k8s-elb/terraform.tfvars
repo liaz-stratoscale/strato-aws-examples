@@ -11,5 +11,8 @@ symp_password = "'!qazxsw2'"
 symp_project = "8df131cba1994dd093648c1feda56c95"
 k8s_name = "ktest"
 
+k8s_configfile_path = "/Users/liaz/.kube/config"
+
 # TODO: Must be received or set by K8S cluster
 k8s_service_port = "31688"
+
