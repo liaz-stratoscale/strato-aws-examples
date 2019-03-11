@@ -6,14 +6,17 @@ resource "aws_alb" "alb" {
   security_groups = ["${aws_security_group.lb-sec.id}"]
 }
 
-output "lb_eip" {
-  value = "${aws_alb.alb.dns_name}"
-}
-
 resource "aws_alb_target_group" "targ" {
-  port = 8080
+  port = "${var.k8s_service_port}"
   protocol = "HTTP"
   vpc_id = "${aws_vpc.app_vpc.id}"
+}
+
+resource "aws_alb_target_group_attachment" "attach_web_servers" {
+  target_group_arn = "${aws_alb_target_group.targ.arn}"
+  target_id       = "${element(module.my_k8s.k8s_nodes_ids,count.index)}"
+  port            = "${var.k8s_service_port}"
+  count = "${var.k8s_count}"
 }
 
 resource "aws_alb_listener" "list" {

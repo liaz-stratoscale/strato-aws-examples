@@ -49,7 +49,3 @@ resource "null_resource" "delete_k8s_cluster" {
     }
   }
 }
-
-output "k8s_info" {
-  value = "${data.external.k8s_info.result}"
-}

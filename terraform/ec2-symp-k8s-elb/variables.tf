@@ -27,3 +27,7 @@ variable "k8s_type" {
   description = "Instance type of each node"
   default = "t2.xlarge"
 }
+
+variable "k8s_service_port" {
+  description = "The service port exposed by Kubernetes"
+}
