@@ -114,6 +114,7 @@ Temporary Items
 *.tfstate
 *.tfstate.*
 *.log
+*.tmp
 
 # Ansible
 *.retry
