@@ -1,5 +1,5 @@
 provider "kubernetes" {
-  config_path = "~/.kube/config"
+  config_path = "${var.k8s_configfile_path}"
 }
 
 resource "null_resource" "depenecy_nothing" {
@@ -7,7 +7,6 @@ resource "null_resource" "depenecy_nothing" {
     cluster_k8s_id = "${var.k8s_cluster_dependency_id}"
   }
 }
-
 
 resource "kubernetes_pod" "nginx" {
   metadata {

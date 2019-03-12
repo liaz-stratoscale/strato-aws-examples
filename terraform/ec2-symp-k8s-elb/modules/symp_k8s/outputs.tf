@@ -4,5 +4,9 @@ output "k8s_nodes_ids" {
 
 # This is passed out to allow dependency in this cluster
 output "k8s_cluster_id" {
-  value = "${null_resource.create_k8s_cluster.id}"
+  value = "${null_resource.k8s_config_file.id}"
+}
+
+output "k8s_sync_empty_string" {
+  value = "${substr(null_resource.k8s_config_file.id,0,0)}"
 }

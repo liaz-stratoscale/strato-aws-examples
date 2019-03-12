@@ -22,10 +22,23 @@ resource "null_resource" "create_k8s_cluster" {
       "k8s_confile" = "${local.tmp_k8s_config_file}"
     }
   }
+
+  provisioner "local-exec" {
+    when = "destroy"
+    command = "${path.module}/sh/k8s_delete.sh"
+
+    environment {
+      "symp_host" = "${var.symp_host}"
+      "symp_domain" = "${var.symp_domain}"
+      "symp_user" = "${var.symp_user}"
+      "symp_password" = "${var.symp_password}"
+      "symp_prj" = "${var.symp_project}"
+      "k8s_name" = "${var.k8s_name}"
+    }
+  }
 }
 
 resource "null_resource" "k8s_config_file" {
-
   provisioner "local-exec" {
     command = "cp  ${local.tmp_k8s_config_file} ${var.k8s_configfile_path}"
   }
@@ -51,20 +64,4 @@ data "external" "k8s_info" {
   }
 
   depends_on = ["null_resource.create_k8s_cluster"]
-}
-
-resource "null_resource" "delete_k8s_cluster" {
-  provisioner "local-exec" {
-    when = "destroy"
-    command = "${path.module}/sh/k8s_delete.sh"
-
-    environment {
-      "symp_host" = "${var.symp_host}"
-      "symp_domain" = "${var.symp_domain}"
-      "symp_user" = "${var.symp_user}"
-      "symp_password" = "${var.symp_password}"
-      "symp_prj" = "${var.symp_project}"
-      "k8s_name" = "${var.k8s_name}"
-    }
-  }
 }
