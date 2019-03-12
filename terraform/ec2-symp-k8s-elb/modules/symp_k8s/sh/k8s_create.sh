@@ -13,9 +13,10 @@ function write_configfile_and_exit() {
 
   PUBLICADDRESS=$(jq -r ".public_address" <<< "${RESULT}")
   echo "DEBUG: PUBLICADDRESS = ${PUBLICADDRESS}"
+  echo "DEBUG: K8S config file path = ${k8s_confile}"
   KUBECONFIG=$(jq -r ".kubeconfig" <<< "${RESULT}")
   echo "${KUBECONFIG}" | sed "s|https.*6443|$PUBLICADDRESS|g" > "${k8s_confile}"
-  echo "End logging" >> test.log
+  echo "End logging"
   exit 0
 }
 

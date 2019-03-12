@@ -28,11 +28,8 @@ variable "k8s_type" {
   default = "t2.xlarge"
 }
 
-variable "k8s_service_port" {
-  description = "The service port exposed by Kubernetes"
-}
-
 variable "k8s_configfile_path" {
   description = "Path to place the Kubernetes config file"
+  default = "~/.kube/config"
 }
 

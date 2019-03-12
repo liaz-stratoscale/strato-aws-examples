@@ -7,7 +7,7 @@ resource "aws_alb" "alb" {
 }
 
 resource "aws_alb_target_group" "targ" {
-  port = "${var.k8s_service_port}"
+  port = "${module.nginx_app.service_out_port}"
   protocol = "HTTP"
   vpc_id = "${aws_vpc.app_vpc.id}"
 }
@@ -15,7 +15,6 @@ resource "aws_alb_target_group" "targ" {
 resource "aws_alb_target_group_attachment" "attach_web_servers" {
   target_group_arn = "${aws_alb_target_group.targ.arn}"
   target_id       = "${element(module.my_k8s.k8s_nodes_ids,count.index)}"
-  port            = "${var.k8s_service_port}"
   count = "${var.k8s_count}"
 }
 

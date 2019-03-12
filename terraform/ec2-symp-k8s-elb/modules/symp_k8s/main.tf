@@ -1,3 +1,7 @@
+locals {
+  tmp_k8s_config_file = "${path.module}/temp_k8s_config_file.tmp"
+}
+
 resource "null_resource" "create_k8s_cluster" {
   provisioner "local-exec" {
     command = "${path.module}/sh/k8s_create.sh"
@@ -15,9 +19,23 @@ resource "null_resource" "create_k8s_cluster" {
       "k8s_count" = "${var.k8s_count}"
       "k8s_type" = "${var.k8s_type}"
       "k8s_eip" = "${var.k8s_eip}"
-      "k8s_confile" = "${var.k8s_configfile_path}"
+      "k8s_confile" = "${local.tmp_k8s_config_file}"
     }
   }
+}
+
+resource "null_resource" "k8s_config_file" {
+
+  provisioner "local-exec" {
+    command = "cp  ${local.tmp_k8s_config_file} ${var.k8s_configfile_path}"
+  }
+
+  provisioner "local-exec" {
+    when = "destroy"
+    command = "rm -rf ${var.k8s_configfile_path}"
+  }
+
+  depends_on = ["null_resource.create_k8s_cluster"]
 }
 
 data "external" "k8s_info" {

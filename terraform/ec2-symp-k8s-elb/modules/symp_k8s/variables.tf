@@ -29,7 +29,6 @@ variable "k8s_type" {
   default = "t2.xlarge"
 }
 
-
 variable "k8s_configfile_path" {
   default = "/Users/liaz/.kube/config"
 }

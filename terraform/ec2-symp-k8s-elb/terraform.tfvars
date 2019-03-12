@@ -13,6 +13,3 @@ k8s_name = "ktest"
 
 k8s_configfile_path = "/Users/liaz/.kube/config"
 
-# TODO: Must be received or set by K8S cluster
-k8s_service_port = "31688"
-
