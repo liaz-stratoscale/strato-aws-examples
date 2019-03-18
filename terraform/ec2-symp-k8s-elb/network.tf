@@ -38,7 +38,19 @@ resource "aws_subnet" "pub_subnet"{
   depends_on = ["aws_vpc_dhcp_options_association.dns_resolver"]
 }
 
-#default route table 
+#provision DB subnet
+resource "aws_subnet" "db_subnet"{
+
+  vpc_id = "${aws_vpc.app_vpc.id}"
+  cidr_block = "192.168.20.0/24"
+  tags {
+      Name = "db subnet"
+  }
+  depends_on = ["aws_vpc_dhcp_options_association.dns_resolver"]
+}
+
+
+#default route table
 resource "aws_default_route_table" "default" {
    default_route_table_id = "${aws_vpc.app_vpc.default_route_table_id}"
 

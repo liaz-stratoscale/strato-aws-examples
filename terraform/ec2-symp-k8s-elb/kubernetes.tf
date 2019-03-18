@@ -14,11 +14,9 @@ module "my_k8s" {
 
 resource "aws_eip" "k8s_eip" {
   vpc = true
+
+  depends_on = ["aws_default_route_table.default"]
 }
 
-module "nginx_app" {
-  source = "./modules/k8s_nginx_app"
 
-  k8s_cluster_dependency_id = "${module.my_k8s.k8s_cluster_id}"
-  k8s_configfile_path = "${var.k8s_configfile_path}"
-}
+

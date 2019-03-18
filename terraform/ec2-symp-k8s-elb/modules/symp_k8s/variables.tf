@@ -26,10 +26,10 @@ variable "k8s_count" {
 }
 variable "k8s_type" {
   description = "Instance type of each node"
-  default = "t2.xlarge"
+  default = "t2.large"
 }
 
 variable "k8s_configfile_path" {
-  default = "/Users/liaz/.kube/config"
+  default = "~/.kube/config"
 }
 

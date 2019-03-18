@@ -10,6 +10,13 @@ symp_user = "demo"
 symp_password = "'!qazxsw2'"
 symp_project = "8df131cba1994dd093648c1feda56c95"
 k8s_name = "ktest"
-
+k8s_type = "t2.medium"
 k8s_configfile_path = "/Users/liaz/.kube/config"
+
+###
+pv_efs_eip = "10.45.96.110"
+###
+
+db_user = "dbadmin"
+db_password = "admin123"
 

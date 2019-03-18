@@ -5,6 +5,7 @@ provider "kubernetes" {
 resource "null_resource" "depenecy_nothing" {
   triggers {
     cluster_k8s_id = "${var.k8s_cluster_dependency_id}"
+    eip_k8s_id = "${var.k8s_cluster_eip_id}"
   }
 }
 
