@@ -39,12 +39,3 @@ variable "k8s_configfile_path" {
 variable "pv_efs_eip" {
   description = "EIP of EFS required for NFS PV"
 }
-
-# Wordpress variables
-variable "db_user" {
-  description = "Username for the DB"
-}
-
-variable "db_password" {
-  description = "Password for the DB"
-}

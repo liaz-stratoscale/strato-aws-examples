@@ -17,6 +17,3 @@ k8s_configfile_path = "/Users/liaz/.kube/config"
 pv_efs_eip = "10.45.96.110"
 ###
 
-db_user = "dbadmin"
-db_password = "admin123"
-
