@@ -71,7 +71,7 @@ resource "kubernetes_deployment" "grafana_deployment" {
       "spec" {
         container {
           name = "sub-grafana"
-          image = "grafana/grafana"
+          image = "${var.grafana_image}"
           env {
             name = "GF_PATHS_CONFIG"
             value = "/mnt/grafana/grafana.ini"

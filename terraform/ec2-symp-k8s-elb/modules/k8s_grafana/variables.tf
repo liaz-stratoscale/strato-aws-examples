@@ -13,3 +13,7 @@ variable "k8s_configfile_path" {
 variable "pv_efs_ip" {
   description = "IP of EFS required for NFS PV"
 }
+
+variable "grafana_image" {
+  description = "The image that will be pulled to pods"
+}

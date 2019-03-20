@@ -5,6 +5,7 @@ module "k8s_grafana" {
   k8s_cluster_eip_id = "${aws_eip.k8s_eip.id}"
   k8s_configfile_path = "${var.k8s_configfile_path}"
 
+  grafana_image = "${var.grafana_image}"
   pv_efs_ip = "${var.pv_efs_eip}"
 }
 
