@@ -30,15 +30,6 @@ resource "kubernetes_persistent_volume" "grafana_pv" {
   depends_on = ["null_resource.depenecy_nothing"]
 }
 
-resource "kubernetes_config_map" "grafana_config" {
-  "metadata" {
-    name = "grafana"
-  }
-  data = {
-    "grafanabolt.ini" = "${file("${path.module}/grafana_conf.ini")}"
-  }
-}
-
 resource "kubernetes_persistent_volume_claim" "grafana_pv_claim" {
   metadata {
     name = "grafana-pv-claim"

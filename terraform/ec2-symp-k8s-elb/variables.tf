@@ -6,7 +6,7 @@ variable "symp_domain" {}
 variable "symp_user" {}
 variable "symp_password" {}
 variable "symp_project" {
-  description = "Project ID"
+  description = "Project Name"
 }
 
 # Kubernetes cluster variables

@@ -43,9 +43,9 @@ function get_token() {
     --arg domain "${symp_domain}" \
     --arg user "${symp_user}" \
     --arg password "${symp_pass_new}" \
-    --arg project_id "${symp_prj}" \
-    '{"auth":{"identity":{"methods":["password"], "password":{"user":{"name":$user,"password":$password,"domain":{"name":$domain}}}}, "scope":{"project":{"id":$project_id}}}}')
-  echo "DEBUG: get_token body = ${body}"
+    --arg project "${symp_prj}" \
+    '{"auth":{"identity":{"methods":["password"],"password":{"user":{"name":$user,"password":$password,"domain":{"name":$domain}}}},"scope":{"project":{"name":$project,"domain":{"name":$domain}}}}}')
+  echo "DEBUG: TOKEN = ${TOKEN}"
   TOKEN=$(curl -s -k -i -H "Content-Type: application/json" -d "${body}" "https://${symp_host}/api/v2/identity/auth" | grep -i x-subject-token | cut -b 18- | tr -d \\r)
   echo "DEBUG: TOKEN = ${TOKEN}"
   if [[ -z "${TOKEN}" ]]; then error_exit "Failed to get token"; fi

@@ -27,8 +27,8 @@ function get_token() {
     --arg domain "${DOMAIN}" \
     --arg user "${USER}" \
     --arg password "${pass_new}" \
-    --arg project_id "${PRJID}" \
-    '{"auth":{"identity":{"methods":["password"], "password":{"user":{"name":$user,"password":$password,"domain":{"name":$domain}}}}, "scope":{"project":{"id":$project_id}}}}')
+    --arg project "${PRJID}" \
+    '{"auth":{"identity":{"methods":["password"],"password":{"user":{"name":$user,"password":$password,"domain":{"name":$domain}}}},"scope":{"project":{"name":$project,"domain":{"name":$domain}}}}}')
   echo "DEBUG: get_token body = ${body}" >>k8s_info.log
   TOKEN=$(curl -s -k -i -H "Content-Type: application/json" -d "${body}" "https://${HOST}/api/v2/identity/auth" | grep -i x-subject-token | cut -b 18- | tr -d \\r)
   echo "DEBUG: TOKEN = ${TOKEN}" >>k8s_info.log
