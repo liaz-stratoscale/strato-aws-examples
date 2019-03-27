@@ -17,3 +17,7 @@ variable "pv_efs_ip" {
 variable "grafana_image" {
   description = "The image that will be pulled to pods"
 }
+
+variable "grafana_name" {
+  description = "The name of grafana deployment"
+}

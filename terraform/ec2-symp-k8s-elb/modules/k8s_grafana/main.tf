@@ -11,7 +11,7 @@ resource "null_resource" "depenecy_nothing" {
 
 resource "kubernetes_persistent_volume" "grafana_pv" {
     metadata {
-        name = "grafana-pv"
+        name = "${var.grafana_name}-pv"
     }
     spec {
         capacity {
@@ -32,7 +32,7 @@ resource "kubernetes_persistent_volume" "grafana_pv" {
 
 resource "kubernetes_persistent_volume_claim" "grafana_pv_claim" {
   metadata {
-    name = "grafana-pv-claim"
+    name = "${var.grafana_name}-pv-claim"
   }
   spec {
     access_modes = ["ReadWriteMany"]
@@ -47,15 +47,15 @@ resource "kubernetes_persistent_volume_claim" "grafana_pv_claim" {
 
 resource "kubernetes_deployment" "grafana_deployment" {
   "metadata" {
-    name = "sub-grafana"
+    name = "${var.grafana_name}"
     labels {
-      "k8s-app" = "sub-grafana"
+      "k8s-app" = "${var.grafana_name}"
     }
   }
   "spec" {
     selector {
       match_labels {
-        "k8s-app" = "sub-grafana"
+        "k8s-app" = "${var.grafana_name}"
       }
     }
 //    strategy {
@@ -63,14 +63,14 @@ resource "kubernetes_deployment" "grafana_deployment" {
 //    }
     "template" {
       "metadata" {
-        name = "sub-grafana"
+        name = "${var.grafana_name}"
         labels {
-          "k8s-app" = "sub-grafana"
+          "k8s-app" = "${var.grafana_name}"
         }
       }
       "spec" {
         container {
-          name = "sub-grafana"
+          name = "${var.grafana_name}"
           image = "${var.grafana_image}"
           env {
             name = "GF_PATHS_CONFIG"
@@ -100,12 +100,12 @@ resource "kubernetes_service" "grafana_service" {
   metadata {
     name = "grafana-service"
     labels {
-      "k8s-app" = "sub-grafana"
+      "k8s-app" = "${var.grafana_name}"
     }
   }
   spec {
     selector {
-      "k8s-app" = "sub-grafana"
+      "k8s-app" = "${var.grafana_name}"
     }
     port {
       protocol = "TCP"

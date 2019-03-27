@@ -6,6 +6,7 @@ module "k8s_grafana" {
   k8s_configfile_path = "${var.k8s_configfile_path}"
 
   grafana_image = "${var.grafana_image}"
+  grafana_name = "sub-grafana"
   pv_efs_ip = "${var.pv_efs_eip}"
 }
 
