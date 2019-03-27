@@ -9,13 +9,15 @@ symp_domain = "demo"
 symp_user = "demo"
 symp_password = "'!qazxsw2'"
 symp_project = "demo"
+
 k8s_name = "ktest"
 k8s_type = "t2.medium"
 k8s_configfile_path = "/Users/liaz/.kube/config"
+k8s_private_registry = "10.45.96.107:5000"
 
 ####
 dns_list = ["8.8.8.8", "8.8.4.4"]
-grafana_image = "grafana/grafana"
+grafana_image = "10.45.96.107:5000/grafana"
 ####
 
 ###

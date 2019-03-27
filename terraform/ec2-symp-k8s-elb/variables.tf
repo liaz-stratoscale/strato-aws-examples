@@ -31,14 +31,25 @@ variable "k8s_type" {
   description = "Instance type of each node"
   default = "t2.large"
 }
+
 variable "k8s_configfile_path" {
   description = "Path to place the Kubernetes config file"
   default = "~/.kube/config"
 }
 
+variable "k8s_private_registry" {
+  description = "Address and port of a private registry to be added. Only insecure. e.g. 1.2.3.4:5000"
+  default = ""
+}
+
 # Application variables
 variable "grafana_image" {
   description = "The image that will be pulled to pods"
+}
+
+variable "grafana_port" {
+  default = 3000
+  description = "The Grafana service port"
 }
 
 variable "dns_list" {

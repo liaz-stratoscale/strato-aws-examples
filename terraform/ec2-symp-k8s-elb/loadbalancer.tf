@@ -21,8 +21,8 @@ resource "aws_security_group" "lb-sec" {
   }
   # HTTP access from anywhere
   ingress {
-    from_port   = 8080
-    to_port     = 8080
+    from_port   = "${var.grafana_port}"
+    to_port     = "${var.grafana_port}"
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }

@@ -27,5 +27,5 @@ resource "aws_alb_listener" "grafana_list" {
     type = "forward"
   }
   load_balancer_arn = "${aws_alb.alb.arn}"
-  port = 3000
+  port = "${var.grafana_port}"
 }
