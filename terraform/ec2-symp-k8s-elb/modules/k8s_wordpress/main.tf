@@ -70,9 +70,9 @@ resource "kubernetes_deployment" "wp_deployment" {
         "tier" = "frontend"
       }
     }
-    strategy {
-      type = "Recreate"
-    }
+//    strategy {
+//      type = "Recreate"
+//    }
     "template" {
       "metadata" {
         labels {
@@ -108,6 +108,14 @@ resource "kubernetes_deployment" "wp_deployment" {
           port {
             container_port = 80
             name = "wordpress"
+          }
+          readiness_probe {
+            http_get {
+              path = "/"
+              port = "80"
+            }
+            initial_delay_seconds = 60
+            failure_threshold = 5
           }
           volume_mount {
             mount_path = "/var/www/html"

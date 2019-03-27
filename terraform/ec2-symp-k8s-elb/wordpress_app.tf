@@ -10,6 +10,9 @@ module "k8s_wordpress" {
   db_name = "${aws_db_instance.wpdb.name}"
   db_user = "${var.db_user}"
   db_password = "${var.db_password}"
+
+  wordpress_image = "wordpress"
+  wordpress_name = "mywordpress"
 }
 
 resource "aws_alb_target_group" "wp_targ" {

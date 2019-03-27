@@ -6,8 +6,6 @@ resource "aws_alb" "alb" {
   security_groups = ["${aws_security_group.lb-sec.id}"]
 }
 
-
-
 resource "aws_security_group" "lb-sec" {
   name = "lb-secgroup"
   vpc_id = "${aws_vpc.app_vpc.id}"
@@ -21,8 +19,8 @@ resource "aws_security_group" "lb-sec" {
   }
   # HTTP access from anywhere
   ingress {
-    from_port   = 8080
-    to_port     = 8080
+    from_port   = "${var.wordpress_port}"
+    to_port     = "${var.wordpress_port}"
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -35,13 +33,14 @@ resource "aws_security_group" "lb-sec" {
   }
 
   #ping from anywhere
-    ingress {
+  ingress {
     from_port   = 8
     to_port     = 0
     protocol    = "icmp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-    egress {
+
+  egress {
       from_port = 0
       to_port = 0
       protocol = "-1"

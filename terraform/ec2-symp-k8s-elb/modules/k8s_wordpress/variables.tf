@@ -14,6 +14,14 @@ variable "pv_efs_ip" {
   description = "IP of EFS required for NFS PV"
 }
 
+variable "wordpress_image" {
+  description = "The image that will be pulled to pods"
+}
+
+variable "wordpress_name" {
+  description = "The name of wordpress deployment"
+}
+
 # Wordpress variables
 variable "db_host" {
   description = "IP address for the DB"

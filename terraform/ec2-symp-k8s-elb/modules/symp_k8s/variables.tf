@@ -33,3 +33,7 @@ variable "k8s_configfile_path" {
   default = "~/.kube/config"
 }
 
+variable "k8s_private_registry" {
+  description = "Address and port of a private registry to be added. Only insecure. e.g. 1.2.3.4:5000"
+  default = ""
+}

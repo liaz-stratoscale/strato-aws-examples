@@ -10,6 +10,7 @@ module "my_k8s" {
   k8s_subnet = "${aws_subnet.pub_subnet.id}"
   k8s_eip = "${aws_eip.k8s_eip.id}"
   k8s_configfile_path = "${var.k8s_configfile_path}"
+  k8s_private_registry = "${var.k8s_private_registry}"
 }
 
 resource "aws_eip" "k8s_eip" {

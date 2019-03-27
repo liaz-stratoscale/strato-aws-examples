@@ -38,6 +38,28 @@ resource "null_resource" "create_k8s_cluster" {
   }
 }
 
+resource"null_resource""k8s_add_private_registry"{
+  provisioner"local-exec"{
+    command="${path.module}/sh/k8s_add_prv_reg.sh"
+
+    environment{
+      "symp_host"="${var.symp_host}"
+      "symp_domain"="${var.symp_domain}"
+      "symp_user"="${var.symp_user}"
+      "symp_password"="${var.symp_password}"
+      "symp_prj"="${var.symp_project}"
+      "k8s_name"="${var.k8s_name}"
+      "k8s_prv_reg"="${var.k8s_private_registry}"
+    }
+  }
+
+  depends_on=["null_resource.create_k8s_cluster"]
+
+  # add the private registry only if it is declared
+  count = "${var.k8s_private_registry != "" ? 1 : 0}"
+}
+
+
 resource "null_resource" "k8s_config_file" {
   provisioner "local-exec" {
     command = "cp  ${local.tmp_k8s_config_file} ${var.k8s_configfile_path}"

@@ -8,10 +8,17 @@ secret_key = "8241a9273af8404c888c7ccfd386daf8"
 symp_domain = "demo"
 symp_user = "demo"
 symp_password = "'!qazxsw2'"
-symp_project = "8df131cba1994dd093648c1feda56c95"
+symp_project = "demo"
+
 k8s_name = "ktest"
 k8s_type = "t2.medium"
 k8s_configfile_path = "/Users/liaz/.kube/config"
+
+####
+dns_list = ["8.8.8.8", "8.8.4.4"]
+wordpress_image = "wordpress:4.8-apache"
+wordpress_port = 8080
+####
 
 ###
 pv_efs_eip = "10.45.96.110"

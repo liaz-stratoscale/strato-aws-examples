@@ -12,13 +12,6 @@ function check_deps() {
   test -f $(which curl) || error_exit "curl command not detected in path, please install it"
 }
 
-function parse_input() {
-  NET_ID=$(echo ${k8s_subnet:7:8}-${k8s_subnet:15:4}-${k8s_subnet:19:4}-${k8s_subnet:23:4}-${k8s_subnet:27:12})
-  echo "DEBUG: NET_ID = ${NET_ID}"
-  FIP_ID=$(echo ${k8s_eip:9:8}-${k8s_eip:17:4}-${k8s_eip:21:4}-${k8s_eip:25:4}-${k8s_eip:29:12})
-  echo "DEBUG: FIP_ID = ${FIP_ID}"
-}
-
 function get_token() {
   eval symp_pass_new=${symp_password}
   echo "DEBUG: symp_pass_new = ${symp_pass_new}"
@@ -58,23 +51,29 @@ function check_if_exists_k8s_cluster() {
   echo "DEBUG: K8S_ID = ${K8S_ID}"
 }
 
-function delete_k8s_cluster() {
-  RESULT=$(curl -k -s -X DELETE "https://${symp_host}/api/v2/kubernetes/clusters/${K8S_ID}"  -H "x-auth-token: $TOKEN" -H "content-type: application/json"  -d "${body}")
+function add_private_registry() {
+  body=$(jq -n \
+    --arg prv_reg "${k8s_prv_reg}" \
+    '{"address": $prv_reg}')
+    RESULT=$(curl -k -s -X PUT "https://${symp_host}/api/v2/kubernetes/clusters/${K8S_ID}/private_registry"  -H "x-auth-token: $TOKEN" -H "content-type: application/json"  -d "${body}")
   echo "DEBUG: RESULT = ${RESULT}"
+  REGISTRY_ID=$(jq -r '.id' <<< "${RESULT}")
+  echo "DEBUG: REGISTRY_ID = ${REGISTRY_ID}"
 }
 
-function wait_for_k8s_deletion() {
+function wait_for_registry_configured() {
   while true; do
-  check_if_exists_k8s_cluster
-  LAST_RESULT=$(curl -s -k -X GET "https://${symp_host}/api/v2/kubernetes/clusters/${K8S_ID}" -H "x-auth-token: $TOKEN" -H "content-type: application/json")
+  LAST_RESULT=$(curl -s -k -X GET "https://${symp_host}/api/v2/kubernetes/clusters/${K8S_ID}/registries" -H "x-auth-token: $TOKEN" -H "content-type: application/json")
   echo "DEBUG: LAST_RESULT = ${LAST_RESULT}"
-  K8S_STATE=$(jq -r ".state" <<< "${LAST_RESULT}")
-  if [[ "${K8S_STATE}" == "error" ]]; then
-    echo "DEBUG: Cluster is in error state"
-    error_exit "Cluster went into error state"
+  FOUND_REGISTRY=$(jq --arg regid "${REGISTRY_ID}" '.[] | select(.id==$regid)' <<< "${LAST_RESULT}")
+  echo "DEBUG: FOUND_REGISTRY = ${FOUND_REGISTRY}"
+  REGISTRY_STATE=$(jq -r ".registry_state" <<< "${FOUND_REGISTRY}")
+  if [[ "${REGISTRY_STATE}" == "configured" ]]; then
+    echo "DEBUG: Registry is in configured state"
+    exit 0
   else
-    echo "Waiting for the K8S to be deleted.."
-    sleep 15
+    echo "Waiting for the registry to be configured.."
+    sleep 5
   fi
   done
 }
@@ -82,9 +81,8 @@ function wait_for_k8s_deletion() {
 # main()
 echo "Start logging"
 check_deps
-parse_input
 get_token
 check_if_exists_k8s_cluster
-delete_k8s_cluster
-wait_for_k8s_deletion
+add_private_registry
+wait_for_registry_configured
 echo "End logging"
