@@ -18,7 +18,7 @@ resource "aws_internet_gateway" "app_igw" {
 
 # add dhcp options
 resource "aws_vpc_dhcp_options" "dns_resolver" {
-  domain_name_servers = ["8.8.8.8", "8.8.4.4"]
+  domain_name_servers = "${var.dns_list}"
 }
 
 # associate dhcp with vpc
