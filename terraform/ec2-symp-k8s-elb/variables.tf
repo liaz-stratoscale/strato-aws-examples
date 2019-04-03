@@ -57,13 +57,6 @@ variable "dns_list" {
   description = "DNS list to be attached to the VPC subnets"
 }
 
-
-
-# EFS EIP - Required due to Symphony bug DBAAS-2121
-variable "pv_efs_eip" {
-  description = "EIP of EFS required for NFS PV"
-}
-
 # Wordpress variables
 variable "db_user" {
   description = "Username for the DB"
