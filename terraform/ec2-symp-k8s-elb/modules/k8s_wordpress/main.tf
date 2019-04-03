@@ -20,6 +20,7 @@ resource "kubernetes_secret" "mysql-pass" {
   }
 
   type = "Opaque"
+  depends_on = ["null_resource.depenecy_nothing"]
 }
 
 
@@ -39,6 +40,8 @@ resource "kubernetes_persistent_volume" "wp_pv" {
           }
         }
     }
+
+  depends_on = ["null_resource.depenecy_nothing"]
 }
 
 resource "kubernetes_persistent_volume_claim" "wp_pv_claim" {
