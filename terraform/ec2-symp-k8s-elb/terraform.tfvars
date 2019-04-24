@@ -11,15 +11,12 @@ symp_password = "'<Symphony password>'"
 symp_project = "<Symphony project>"
 
 k8s_name = "ktest"
-k8s_type = "t2.medium"
+k8s_type = "t2.large"
 k8s_configfile_path = "/path/to/.kube/config"
 
 ####
 dns_list = ["8.8.8.8", "8.8.4.4"]
-wordpress_image = "wordpress:4.8-apache"
-wordpress_port = 8080
 ####
 
-db_user = "<DB admin>"
-db_password = "<DB password>"
 
+pvs_count = 3

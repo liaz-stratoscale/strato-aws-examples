@@ -17,13 +17,7 @@ resource "aws_security_group" "lb-sec" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  # HTTP access from anywhere
-  ingress {
-    from_port   = "${var.wordpress_port}"
-    to_port     = "${var.wordpress_port}"
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+
   # HTTPS access from anywhere
   ingress {
     from_port   = 443

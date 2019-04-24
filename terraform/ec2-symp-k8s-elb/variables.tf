@@ -42,26 +42,9 @@ variable "k8s_private_registry" {
   default = ""
 }
 
-# Application variables
-variable "wordpress_image" {
-  description = "The image that will be pulled to pods"
-}
 
-variable "wordpress_port" {
-  default = 8080
-  description = "The Wordpress service port"
+##########
+variable "pvs_count" {
+  description = "Number of Persistent Volumes to create"
 }
-variable "dns_list" {
-  type = "list"
-  default = ["8.8.4.4", "8.8.8.8"]
-  description = "DNS list to be attached to the VPC subnets"
-}
-
-# Wordpress variables
-variable "db_user" {
-  description = "Username for the DB"
-}
-
-variable "db_password" {
-  description = "Password for the DB"
-}
+##########
