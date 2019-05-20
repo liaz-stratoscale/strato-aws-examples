@@ -17,9 +17,6 @@ provider "aws" {
 
   # No importance for this value currently
   region = "us-east-2"
-
-  # Pinning AWS plugin version - supported by Symphony 4.2.7
-  version = "1.28.0"
 }
 
   

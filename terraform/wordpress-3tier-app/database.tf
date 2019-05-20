@@ -2,7 +2,7 @@
 
 #make db subnet group 
 resource "aws_db_subnet_group" "dbsubnet" {
-  name       = "main"
+  name       = "wordpress_db_subnet"
   subnet_ids = ["${aws_subnet.db_subnet.id}"]
 }
 
@@ -21,7 +21,7 @@ resource "aws_db_instance" "wpdb" {
   vpc_security_group_ids = ["${aws_security_group.db.id}"]
   # Workaround for Symphony 
   lifecycle {
-    ignore_changes = ["engine", "auto_minor_version_upgrade", "vpc_security_group_ids"]
+    ignore_changes = ["auto_minor_version_upgrade", "vpc_security_group_ids"]
   }
 }
 
