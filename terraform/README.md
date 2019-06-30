@@ -2,6 +2,8 @@
 
 These examples show you how to use the Terraform AWS provider with Stratoscale Symphony.
 
+## !! Please notice some examples were converted to terraform 0.12 syntax!!
+
 ## Before you begin
 
 Before you can use these Terraform examples, you need to:

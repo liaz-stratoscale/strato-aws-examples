@@ -1,3 +1,5 @@
+## !! Please this example was converted to terraform 0.12 syntax!!
+
 ### Terraform WordPress deployment over Kubernetes
 
 ## Description:
