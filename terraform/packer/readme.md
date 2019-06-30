@@ -1,3 +1,5 @@
+## !! Please this example was converted to terraform 0.12 syntax!!
+
 # Packer Example
 
 This example shows you how to use Terraform and Packer to create an Ubuntu AMI with Docker installed. The AMI is stored within Symphony, where users can easily access and deploy it.

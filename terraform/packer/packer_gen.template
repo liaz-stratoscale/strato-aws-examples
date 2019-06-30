@@ -7,6 +7,7 @@
     "region": "symphony",
     "communicator": "ssh",
     "skip_region_validation": true,
+    "insecure_skip_tls_verify": true,
     "source_ami": "${packer_ami_image}",
     "subnet_id": "${subnet_id}",
     "vpc_id": "${vpc_id}",

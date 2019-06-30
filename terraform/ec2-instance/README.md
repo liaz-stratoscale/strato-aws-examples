@@ -1,3 +1,5 @@
+## !! Please this example was converted to terraform 0.12 syntax!!
+
 # Simple EC2 Example
 
 This Terraform example creates a very simple EC2 instance from an AMI stored in Symphony.
