@@ -1,6 +1,6 @@
 #Provision load balancer
 resource "aws_alb" "alb" {
-  subnets         = [aws_subnet.pub_subnet.id]
+  subnets         = var.run_on_aws == false ? [aws_subnet.pub_subnet1.id] : [aws_subnet.pub_subnet1.id, aws_subnet.pub_subnet2.id]
   internal        = false
   security_groups = [aws_security_group.lb-sec.id]
 }

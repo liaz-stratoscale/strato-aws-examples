@@ -5,17 +5,17 @@ provider "aws" {
   secret_key = var.secret_key
 
   endpoints {
-    ec2 = "https://${var.symphony_ip}/api/v2/aws/ec2"
-    elb = "https://${var.symphony_ip}/api/v2/aws/elb"
-    rds = "https://${var.symphony_ip}/api/v2/aws/rds"
+    ec2 = var.run_on_aws == true ? null : "https://${var.symphony_ip}/api/v2/aws/ec2"
+    elb = var.run_on_aws == true ? null : "https://${var.symphony_ip}/api/v2/aws/elb"
+    rds = var.run_on_aws == true ? null : "https://${var.symphony_ip}/api/v2/aws/rds"
   }
 
-  insecure                    = "true"
-  skip_metadata_api_check     = true
-  skip_credentials_validation = true
-  skip_requesting_account_id  = true
+  insecure                    = var.run_on_aws == true ? null : true
+  skip_metadata_api_check     = var.run_on_aws == true ? null : true
+  skip_credentials_validation = var.run_on_aws == true ? null : true
+  skip_requesting_account_id  = var.run_on_aws == true ? null : true
 
   # No importance for this value currently
-  region = "us-east-2"
+  region = "us-east-1"
 }
 

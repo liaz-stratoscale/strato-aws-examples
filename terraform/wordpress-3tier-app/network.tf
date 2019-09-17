@@ -28,13 +28,26 @@ resource "aws_vpc_dhcp_options_association" "dns_resolver" {
 }
 
 #provision public subnet
-resource "aws_subnet" "pub_subnet" {
+resource "aws_subnet" "pub_subnet1" {
   vpc_id     = aws_vpc.app_vpc.id
   cidr_block = "192.168.10.0/24"
   tags = {
-    Name = "public subnet"
+    Name = "public subnet 1"
   }
   depends_on = [aws_vpc_dhcp_options_association.dns_resolver]
+  availability_zone = var.run_on_aws == false ? null : "us-east-1a"
+
+}
+
+#provision public subnet
+resource "aws_subnet" "pub_subnet2" {
+  vpc_id     = aws_vpc.app_vpc.id
+  cidr_block = "192.168.20.0/24"
+  tags = {
+    Name = "public subnet 2"
+  }
+  depends_on = [aws_vpc_dhcp_options_association.dns_resolver]
+  availability_zone = var.run_on_aws == false ? null : "us-east-1b"
 }
 
 #provision webserver subnet

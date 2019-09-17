@@ -24,7 +24,7 @@ data "template_cloudinit_config" "wpdeploy_config" {
 
 resource "aws_key_pair" "app_keypair" {
   public_key = file(var.public_keypair_path)
-  key_name   = "wp_app_kp"
+  key_name_prefix = "wp_app_kp_"
 }
 
 resource "aws_instance" "web-server" {
@@ -35,6 +35,7 @@ resource "aws_instance" "web-server" {
   instance_type          = var.web_instance_type
   subnet_id              = aws_subnet.web_subnet.id
   key_name               = aws_key_pair.app_keypair.key_name
+  associate_public_ip_address = true
 
   tags = {
     Name = "web-server-${count.index}"

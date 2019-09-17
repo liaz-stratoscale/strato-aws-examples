@@ -16,8 +16,20 @@ resource "aws_subnet" "subnet1" {
   vpc_id     = aws_vpc.alb-vpc.id
 
   tags = {
-    Name = "ALB Example web subnet"
+    Name = "ALB Example web subnet - 1"
   }
+  availability_zone = var.run_on_aws == false ? null : "us-east-1a"
+}
+
+resource "aws_subnet" "subnet2" {
+  cidr_block = "172.21.2.0/24"
+  vpc_id     = aws_vpc.alb-vpc.id
+
+  tags = {
+    Name = "ALB Example web subnet - 2"
+  }
+
+  availability_zone = var.run_on_aws == false ? null : "us-east-1b"
 }
 
 # add dhcp options
@@ -70,6 +82,9 @@ resource "aws_instance" "web-server" {
   ami           = var.ami_webserver
   instance_type = var.web_servers_type
   subnet_id     = aws_subnet.subnet1.id
+  # TODO - Remove in Strato?
+  associate_public_ip_address = true
+  key_name = "wp_app_kp"
 
   vpc_security_group_ids = [aws_security_group.web-sec.id, aws_security_group.allout.id]
   user_data              = data.template_cloudinit_config.web_config.rendered
@@ -163,7 +178,7 @@ resource "aws_security_group" "lb-sec" {
 # to make LB internal (no floating IP) set internal to true
 resource "aws_alb" "alb" {
   name               = "web-alb"
-  subnets            = [aws_subnet.subnet1.id]
+  subnets            = var.run_on_aws == false ? [aws_subnet.subnet1.id] : [aws_subnet.subnet1.id, aws_subnet.subnet2.id]
   internal           = false
   security_groups    = [aws_security_group.lb-sec.id]
   load_balancer_type = "application"

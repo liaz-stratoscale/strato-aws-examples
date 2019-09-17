@@ -5,6 +5,7 @@ variable "access_key" {
 }
 
 variable "symphony_ip" {
+  default = null
 }
 
 variable "web_number" {
@@ -23,5 +24,10 @@ variable "db_password" {
 }
 
 variable "db_user" {
+}
+
+variable "run_on_aws" {
+  default = false
+  type = bool
 }
 
