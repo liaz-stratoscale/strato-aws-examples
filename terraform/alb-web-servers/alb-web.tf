@@ -82,8 +82,7 @@ resource "aws_instance" "web-server" {
   ami           = var.ami_webserver
   instance_type = var.web_servers_type
   subnet_id     = aws_subnet.subnet1.id
-  # TODO - Remove in Strato?
-  associate_public_ip_address = true
+  associate_public_ip_address = var.run_on_aws == false ? null : true
   key_name = "wp_app_kp"
 
   vpc_security_group_ids = [aws_security_group.web-sec.id, aws_security_group.allout.id]
