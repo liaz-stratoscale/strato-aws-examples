@@ -53,7 +53,7 @@ resource "aws_subnet" "pub_subnet2" {
 #provision webserver subnet
 resource "aws_subnet" "web_subnet" {
   vpc_id     = aws_vpc.app_vpc.id
-  cidr_block = "192.168.20.0/24"
+  cidr_block = "192.168.50.0/24"
   tags = {
     Name = "web server subnet"
   }
@@ -61,9 +61,19 @@ resource "aws_subnet" "web_subnet" {
 }
 
 #provision database subnet
-resource "aws_subnet" "db_subnet" {
+resource "aws_subnet" "db_subnet1" {
   vpc_id     = aws_vpc.app_vpc.id
   cidr_block = "192.168.30.0/24"
+  tags = {
+    Name = "database subnet"
+  }
+  depends_on = [aws_vpc_dhcp_options_association.dns_resolver]
+}
+
+#provision database subnet
+resource "aws_subnet" "db_subnet2" {
+  vpc_id     = aws_vpc.app_vpc.id
+  cidr_block = "192.168.40.0/24"
   tags = {
     Name = "database subnet"
   }

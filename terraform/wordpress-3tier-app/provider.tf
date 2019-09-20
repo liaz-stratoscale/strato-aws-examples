@@ -16,6 +16,6 @@ provider "aws" {
   skip_requesting_account_id  = var.run_on_aws == true ? null : true
 
   # No importance for this value currently
-  region = "us-east-1"
+  region = var.region
 }
 

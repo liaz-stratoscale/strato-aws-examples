@@ -35,7 +35,8 @@ resource "aws_instance" "web-server" {
   instance_type          = var.web_instance_type
   subnet_id              = aws_subnet.web_subnet.id
   key_name               = aws_key_pair.app_keypair.key_name
-  associate_public_ip_address = true
+  # TODO - replace this with NAT object
+  associate_public_ip_address = var.run_on_aws == false ? null : true
 
   tags = {
     Name = "web-server-${count.index}"
@@ -53,7 +54,7 @@ resource "aws_instance" "bastion" {
   vpc_security_group_ids = [aws_security_group.pub.id, aws_security_group.allout.id]
   instance_type          = var.web_instance_type
   key_name               = aws_key_pair.app_keypair.key_name
-  subnet_id              = aws_subnet.pub_subnet.id
+  subnet_id              = aws_subnet.pub_subnet1.id
 
   tags = {
     Name = "WordPress Bastion"
