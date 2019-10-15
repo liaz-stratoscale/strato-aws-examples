@@ -16,9 +16,6 @@ variable "web_ami" {
 variable "web_instance_type" {
 }
 
-variable "public_keypair_path" {
-}
-
 variable "db_password" {
 }
 

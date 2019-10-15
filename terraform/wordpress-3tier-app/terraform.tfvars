@@ -13,7 +13,6 @@ web_number = "2"
 # located here: https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
 web_ami = "<image ID>"
 web_instance_type = "t2.medium"
-public_keypair_path = "<path to public key pair>"
 
 #Database Information (wordpress containe will use wordpress database by default)
 

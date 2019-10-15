@@ -22,11 +22,6 @@ data "template_cloudinit_config" "wpdeploy_config" {
   }
 }
 
-resource "aws_key_pair" "app_keypair" {
-  public_key = file(var.public_keypair_path)
-  key_name   = "wp_app_kp"
-}
-
 resource "aws_instance" "web-server" {
   ami = var.web_ami
 
@@ -34,7 +29,6 @@ resource "aws_instance" "web-server" {
   vpc_security_group_ids = [aws_security_group.web-sec.id, aws_security_group.allout.id]
   instance_type          = var.web_instance_type
   subnet_id              = aws_subnet.web_subnet.id
-  key_name               = aws_key_pair.app_keypair.key_name
 
   tags = {
     Name = "web-server-${count.index}"
@@ -51,7 +45,6 @@ resource "aws_instance" "bastion" {
   # The public SG is added for SSH and ICMP
   vpc_security_group_ids = [aws_security_group.pub.id, aws_security_group.allout.id]
   instance_type          = var.web_instance_type
-  key_name               = aws_key_pair.app_keypair.key_name
   subnet_id              = aws_subnet.pub_subnet.id
 
   tags = {
