@@ -1,5 +1,7 @@
 #Deploy Wordpress instances
 
+# Add this change
+
 #Reference to bash script which prepares xenial image
 data "template_file" "wpdeploy" {
   template = file("./webconfig.cfg")
