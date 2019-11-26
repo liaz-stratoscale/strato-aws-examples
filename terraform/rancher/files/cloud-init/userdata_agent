@@ -1,0 +1,61 @@
+#!/bin/bash
+
+set -euxo pipefail
+
+export curlimage=appropriate/curl
+export rancher_server_ip='${server_address}'
+
+if [ `command -v curl` ]; then
+  curl -sL https://releases.rancher.com/install-docker/${docker_version_agent}.sh | sh
+elif [ `command -v wget` ]; then
+  wget -qO- https://releases.rancher.com/install-docker/${docker_version_agent}.sh | sh
+fi
+
+until docker inspect $curlimage > /dev/null 2>&1; do
+  docker pull $curlimage
+  sleep 2
+done
+
+for ver in ${rancher_k8s_versions} ; do
+  export image=rancher/hyperkube:v$ver-rancher1
+  until docker inspect $image > /dev/null 2>&1; do
+    docker pull $image
+    sleep 2
+  done
+done
+
+while [ ! -f /home/ubuntu/amazonaws.crt ]
+do
+  sleep 2
+done
+
+for ver in ${rancher_k8s_versions} ; do
+  docker run -v /home/ubuntu/amazonaws.crt:/usr/local/share/ca-certificates/amazonaws.crt --name runcerts rancher/hyperkube:v$ver-rancher1  bash -c "update-ca-certificates"
+  docker commit runcerts rancher/hyperkube:v$ver-rancher1
+  docker rm runcerts
+done
+
+
+apt-get install -y python-pip
+pip install boto3==1.9.134
+pip install pyudev==0.21
+pip install retrying==1.3.3
+pip install requests
+mkdir -p /var/log/symphony
+mkdir -p /etc/symphony/scripts
+
+while [ ! -f /home/ubuntu/99-disk_mapper.rules ]
+do
+  sleep 2
+done
+
+cp /home/ubuntu/99-disk_mapper.rules /etc/udev/rules.d/
+cp /home/ubuntu/disk_mapper.py /etc/symphony/scripts/
+sudo udevadm control --reload-rules && sudo udevadm trigger
+
+while true; do
+  docker run --rm $curlimage -sLk https://$rancher_server_ip/ping && break
+  sleep 5
+done
+
+touch /tmp/finished-user-data

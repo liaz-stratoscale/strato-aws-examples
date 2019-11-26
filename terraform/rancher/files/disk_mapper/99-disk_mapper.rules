@@ -1,0 +1,1 @@
+KERNEL=="vd*[!0-9]", PROGRAM="/usr/bin/sudo /usr/bin/python /etc/symphony/scripts/disk_mapper.py %k", SYMLINK+="%c"
